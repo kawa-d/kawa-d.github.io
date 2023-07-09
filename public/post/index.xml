@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Posts on kawaD</title>
+        <link>https://kawa-d.github.io/post/</link>
+        <description>Recent content in Posts on kawaD</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 09 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://kawa-d.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>HugoとGithub Pageでブログ用サイト作ってみました</title>
+        <link>https://kawa-d.github.io/post/hello-world/</link>
+        <pubDate>Sun, 09 Jul 2023 00:00:00 +0000</pubDate>
+        
+        <guid>https://kawa-d.github.io/post/hello-world/</guid>
+        <description>&lt;h2 id=&#34;気まぐれ&#34;&gt;気まぐれ&lt;/h2&gt;
+&lt;p&gt;気まぐれで色々初めてしまう癖があり、継続できないのが毎度のパターンなんですが、最近はそれを反省して継続を意識するようになりました。
+がんばって１年は続けていきたいです。
+仕事は情シスなので、情シス関連の技術ブログをメインに書いていきたいですが、「継続」ってのがサブテーマなので、ただの日記などジャンルは幅広くしてネタが尽きないようにしたいです。&lt;/p&gt;
+&lt;h2 id=&#34;github-page&#34;&gt;Github Page&lt;/h2&gt;
+&lt;p&gt;タイトル通りHugoとGithub Pageでブログ用サイト作ってみました。
+Github Pageは静的サイトをホストできるところです。Githubアカウント持ってたら無料で使えます。広告も貼れるらしいです。
+&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/ja/pages/getting-started-with-github-pages/about-github-pages&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Github Page&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;hugo&#34;&gt;HUGO&lt;/h2&gt;
+&lt;p&gt;HUGOは静的サイトジェネレーターとかいう、いい感じにブログっぽい見た目をサクッと構築してくれるフレームワーク的なやつです。
+HUGO &amp;gt; Themesってのがあって、おしゃれでセンスのあるデザイナーさんたちが色んなフレームワークを作ってます。お気に入りを見つけて、cloneして、HUGOにいれれば使えるようになります。Themesを選ぶとそのGithubのリポジトリに飛ぶんですが、ドキュメントが揃ってて入れやすいイメージです。
+自分が使用してるのはStackってやつです。&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://themes.gohugo.io/themes/hugo-theme-stack/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Stack&lt;/a&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;HUGO&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;構築やり方wsl2&#34;&gt;構築やり方（WSL2）&lt;/h2&gt;
+&lt;p&gt;自分の環境：Windows10, WSL2&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;大枠&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Github Pageを用意する&lt;/li&gt;
+&lt;li&gt;ローカルにHUGO入れる&lt;/li&gt;
+&lt;li&gt;pushしてHUGO×Github Pageでサイト公開&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;1-github-pageを用意する&#34;&gt;1. Github Pageを用意する&lt;/h4&gt;
+&lt;p&gt;公式がわかりやすく手順を書いてますので、それ通りに作成します。&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/ja/pages/getting-started-with-github-pages/creating-a-github-pages-site&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Github Pageの作成手順&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&#34;2-hugo入れる&#34;&gt;2. HUGO入れる&lt;/h4&gt;
+&lt;p&gt;1.で作ったリポジトリをcloneしてローカル環境にブログ用のディレクトリを用意します。
+&lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/installation/linux/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;HUGO Installation Linux&lt;/a&gt;を見ながら入れていきます。
+自分の環境はWSLのUbuntuです。DockerのimageでHUGO入れてもよかったんですが、未だにwindows10のVmmem暴走する問題に悩まされていて、&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;よくあるトラブルシュートで.wslconfig設定ファイルをいじっても治らずのままです。win11にすると治るらしい？Macがほしい。&lt;/li&gt;
+&lt;li&gt;どこかのサイトでapt-getでやるとバージョンが最新にならずThemeによっては反映されないという噂を聞いたため、もうGoを直接wslにいれて動かそうという流れになりました。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Goを入れてHUGO立ち上げる手順は&lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/installation/linux/#build-from-source&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Build from source&lt;/a&gt;に載ってます。&lt;/p&gt;
+&lt;p&gt;Goを扱ったことがなかったのですが、下記のPATHを設定しないといけないようで、&lt;code&gt;hugo version&lt;/code&gt;でversionが出ず、ディレクトリ内でhugoコマンド呼び出せなかったです。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ export GOPATH&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;$HOME/go
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ export GOBIN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;$GOPATH/bin
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ export PATH&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;$PATH:$GOPATH/bin
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/getting-started/quick-start/#create-a-site&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Create a site&lt;/a&gt; を見ながら、HUGOを立ち上げていきます。
+&lt;code&gt;hugo new site &amp;lt;xxxxxx&amp;gt;&lt;/code&gt;で、HUGOのファイルをリポジトリに入れます。xxxxxxの部分はリポジトリ名で、-fだったかでforceしながらリポジトリに強制的にいれました。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git submodule add https://&amp;lt;xxxxxx&amp;gt; themes/&amp;lt;xxxxxx&amp;gt;&lt;/code&gt;で好きなThemeいれて、&lt;code&gt;hugo server&lt;/code&gt;で立ち上げたら、開発環境構築終わりです。&lt;/p&gt;
+&lt;p&gt;あとは、content/post配下に.mdファイルいれて記事つくります。この辺の構成はThemeによって若干違いますが、Themeのドキュメントに基本的には書いてあるのでそれに沿ってやっていきます。&lt;/p&gt;
+&lt;h4 id=&#34;3-pushしてhugogithub-pageでサイト公開&#34;&gt;3. pushしてHUGO×Github Pageでサイト公開&lt;/h4&gt;
+&lt;p&gt;HUGOがGithub Pageにあげる場合、Actions使って、プッシュのタイミングでビルドするような手順を&lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/hosting-and-deployment/hosting-on-github/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Host on GitHub&lt;/a&gt;に書いてたので、その通りにしていく。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
