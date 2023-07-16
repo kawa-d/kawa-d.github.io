@@ -6,7 +6,180 @@
         <description>Recent content in Posts on kawaD</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sun, 09 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://kawa-d.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 11 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://kawa-d.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>＜miibo＞社内問い合わせをAIが自動回答するchatbot作ってみた</title>
+        <link>https://kawa-d.github.io/post/aichatbot/</link>
+        <pubDate>Tue, 11 Jul 2023 00:00:00 +0000</pubDate>
+        
+        <guid>https://kawa-d.github.io/post/aichatbot/</guid>
+        <description>&lt;h2 id=&#34;ヘルプデスク作業&#34;&gt;ヘルプデスク作業&lt;/h2&gt;
+&lt;p&gt;ヘルプデスク作業って少し好きで、誰かの困り事をどうしたどうした？と寄り添って、それを解決すると「ありがとうございます！」なんて言われると、いやー今日も仕事したな～って気分になりますよね。&lt;/p&gt;
+&lt;p&gt;でも、問い合わせ内容によっては、再起動すれば治るような事や、社内ドキュメント読めばわかるような事も結構あり、ただ時間だけとられて、情シス的にやりたいことが後回しになり、結局なんにもできなかった。という事があります。&lt;/p&gt;
+&lt;p&gt;ドキュメントは結構そろってるのにあんまり理解されないし読んでくれない。どうすればみんな自動的に欲しいデータを取ってくれるのか&amp;hellip;.&lt;/p&gt;
+&lt;p&gt;このAI革命時代に何かできることはないかな～と探していると、会社のAIトピックを扱ってるSlackチャンネルにてmiiboの話が出ていて、AIを使ったchatbotがプログラム不要で作れて、Slackともサクッと連携可能！とのことだったので、これならできそう！chatbotならみんながハッピーになりそう！やってみよう！となりました。&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://note.com/makunugi/n/n2a393732cd36&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;このnoteにこれからやる事すべて書いてあります。&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;弊社の社内問い合わせについて&#34;&gt;弊社の社内問い合わせについて&lt;/h2&gt;
+&lt;p&gt;Slackのワークフローで問い合わせ受けて、スレッドで回答するような形で社内の問い合わせ対応を行ってます。2年前くらいから、ログを取っているためそれをベースに試していきます。&lt;/p&gt;
+&lt;p&gt;簡単なところからスタートしていきたいので、まずはPCの問い合わせに絞って返答できるようにしていきます。&lt;/p&gt;
+&lt;p&gt;今回使うmiiboは専門性の高い問い合わせに対して返事してくれます。&lt;/p&gt;
+&lt;p&gt;例えば、弊社のPCはレンタルしていて、返却にまつわる問い合わせも受けるときがあり、返却する際はリモートワークもあるため個人がレンタル会社へ送ってもらっています。なので「返却はここに送ってください～。住所：XXX」などのような弊社でしか使わない運用知識をカバーできるのを期待して作っていきます。&lt;/p&gt;
+&lt;h2 id=&#34;miibo登録してchatbot作成&#34;&gt;miibo登録してchatbot作成&lt;/h2&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://miibo.jp/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;miibo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;miiboにサインアップしてchatbotを新規作成します。今回は推奨されてる通常モードで作成しました。&lt;/p&gt;
+&lt;p&gt;答えれない質問はGPT4によって自動回答するような設定もできます。&lt;/p&gt;
+&lt;p&gt;また、miiboのプラン（お金）によって精度高さを選び、会話回数に上限が設けられています。今回使用する無料枠は一番精度の高いGPT-4で約月15回くらい会話ができました。&lt;/p&gt;
+&lt;p&gt;キャラ設定もします。一人称とか口調を設定できるようです。関西弁とかもできました。&lt;/p&gt;
+&lt;p&gt;色々設定して、めちゃくちゃなAIキャラクター、Famuさんできました。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/post/aichatbot/famu_kaiwa.png&#34;
+	width=&#34;1390&#34;
+	height=&#34;460&#34;
+	srcset=&#34;https://kawa-d.github.io/post/aichatbot/famu_kaiwa_hu4a7bc3a78cf0b7f1ed2a8a33ba96ca19_33337_480x0_resize_box_3.png 480w, https://kawa-d.github.io/post/aichatbot/famu_kaiwa_hu4a7bc3a78cf0b7f1ed2a8a33ba96ca19_33337_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;famu_kaiwa.png&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;302&#34;
+		data-flex-basis=&#34;725px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;ナレッジを追加する&#34;&gt;ナレッジを追加する&lt;/h2&gt;
+&lt;p&gt;miiboにはナレッジデータストアという、GPT-4やGPT-3.5といったAIモデルを利用したチャットボットに、「知識」を与えることができる機能があります。&lt;/p&gt;
+&lt;p&gt;ナレッジを追加するとそのナレッジをベースに答えてくれるので、ナレッジに社内の運用知識を追加していきます。&lt;/p&gt;
+&lt;p&gt;PCの問い合わせ内容の中で一般的な技術的な知識で解決できそうなものは、本来のGPT4の力を借りたほうが最適な回答や一次対応をしてくれそうでした。実際にあった社内の問い合わせを何もナレッジ追加せず聞いてみます。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/post/aichatbot/inquiry1.png&#34;
+	width=&#34;1363&#34;
+	height=&#34;736&#34;
+	srcset=&#34;https://kawa-d.github.io/post/aichatbot/inquiry1_hud46bcfe751c0a8173ea155e410ddbc46_65389_480x0_resize_box_3.png 480w, https://kawa-d.github.io/post/aichatbot/inquiry1_hud46bcfe751c0a8173ea155e410ddbc46_65389_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;inquiry1.png&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;185&#34;
+		data-flex-basis=&#34;444px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;めっちゃいい！実際、この時はルーター再起動で直りました。&lt;/p&gt;
+&lt;p&gt;次に、自分たちしかわからないような運用知識ってなんだ？と絞りながら問い合わせを見返すと、以下の項目を覚えさせたら良さそうでした。&lt;/p&gt;
+&lt;h4 id=&#34;レンタルpcの運用回答&#34;&gt;レンタルPCの運用回答&lt;/h4&gt;
+&lt;p&gt;PCは外部からレンタルしていて、２年単位で回してます。&lt;/p&gt;
+&lt;p&gt;具体的にどんな問い合わせかというと、&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;「退職者のPCはどうすればいいですか？」&lt;/li&gt;
+&lt;li&gt;「新しいMacはいつ届きますか？」&lt;/li&gt;
+&lt;li&gt;「Macが不調で切り替えを早くしたいですが可能ですか？」&lt;/li&gt;
+&lt;li&gt;「PCの画面割れしてしまいました。修理はどうすればよいでしょうか？」&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;これらの問い合わせに対して一次対応は、ほぼ同じ回答になるため、これ答えてくれるとうれしいですね。&lt;/p&gt;
+&lt;p&gt;意外と、PCに限った社内知識となるとこれしかなく、後は先ほどGPT4のみの回答でどうにかなりそうな問い合わせでした。（アカウント申請や、ネットワーク周りなど含めるともっとありますが、今回はPC運用のみで試してみます。）&lt;/p&gt;
+&lt;h5 id=&#34;ナレッジ入れてみる&#34;&gt;ナレッジ入れてみる&lt;/h5&gt;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/post/aichatbot/knowledge.png&#34;
+	width=&#34;819&#34;
+	height=&#34;460&#34;
+	srcset=&#34;https://kawa-d.github.io/post/aichatbot/knowledge_hu0453d256002469b27b94f4c02cc04395_23549_480x0_resize_box_3.png 480w, https://kawa-d.github.io/post/aichatbot/knowledge_hu0453d256002469b27b94f4c02cc04395_23549_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;knowledge.png&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;178&#34;
+		data-flex-basis=&#34;427px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;ナレッジをこんな感じでダーッと文章で手入力で入れました。手入力以外でも、URL指定、CSV形式、API経由などデータを入れる方法はいくつかありました。&lt;/p&gt;
+&lt;p&gt;では、問い合わせてみます。「退職者のPCはどうすればいいですか？」という問い合わせについて確認していきます。&lt;/p&gt;
+&lt;p&gt;まずはナレッジがない場合の回答がこちら。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/post/aichatbot/inquiry2.png&#34;
+	width=&#34;1380&#34;
+	height=&#34;560&#34;
+	srcset=&#34;https://kawa-d.github.io/post/aichatbot/inquiry2_hu021faa5dd3c3671130a8e6514df11ec7_45511_480x0_resize_box_3.png 480w, https://kawa-d.github.io/post/aichatbot/inquiry2_hu021faa5dd3c3671130a8e6514df11ec7_45511_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;inquiry2.png&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;246&#34;
+		data-flex-basis=&#34;591px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;うーん、ユーザーがする事というより、端末管理者がやる事についての回答になってますね。&lt;/p&gt;
+&lt;p&gt;次にナレッジがある場合の回答がこちら。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/post/aichatbot/inquiry4.png&#34;
+	width=&#34;1324&#34;
+	height=&#34;460&#34;
+	srcset=&#34;https://kawa-d.github.io/post/aichatbot/inquiry4_hu5d4191b15c4f937d7d38ca8a7e74b0fc_29992_480x0_resize_box_3.png 480w, https://kawa-d.github.io/post/aichatbot/inquiry4_hu5d4191b15c4f937d7d38ca8a7e74b0fc_29992_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;inquiry4.png&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;287&#34;
+		data-flex-basis=&#34;690px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;「しらんけど」ｗ&lt;/p&gt;
+&lt;p&gt;これ自分がいれた設定なんですが、ちょっとムカつきますね。ただ、回答としては、とても良い回答で社内運用に沿った内容になりました！すごーい。&lt;/p&gt;
+&lt;h2 id=&#34;slack連携してみる&#34;&gt;slack連携してみる&lt;/h2&gt;
+&lt;p&gt;冒頭で記載したnoteの記事にある、&lt;a class=&#34;link&#34; href=&#34;https://note.com/makunugi/n/n2a393732cd36?magazine_key=m125bbb29d4ac&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Slackボット追加編&lt;/a&gt;　に全部書いてますのでそれに沿ってやっていきます。&lt;/p&gt;
+&lt;p&gt;このFamuさんを限定公開か、一般公開すれば外部サービスとの連携ができます。限定公開は、オーナーと管理者のみチャット画面が公開され、外部サービス連携は可能になるような設定です。限定公開で進めていきます。&lt;/p&gt;
+&lt;p&gt;noteに詳しく書いてるので、パチパチと設定を入れていきました。&lt;/p&gt;
+&lt;p&gt;実際にslackでFamuさんを呼び出してみます。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/post/aichatbot/inquiry_slack.png&#34;
+	width=&#34;819&#34;
+	height=&#34;460&#34;
+	srcset=&#34;https://kawa-d.github.io/post/aichatbot/inquiry_slack_huc7fa4929ea374b8cc5886d1db5dec291_71297_480x0_resize_box_3.png 480w, https://kawa-d.github.io/post/aichatbot/inquiry_slack_huc7fa4929ea374b8cc5886d1db5dec291_71297_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;inquiry_slack.png&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;178&#34;
+		data-flex-basis=&#34;427px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;いや～すごい！一日あれば簡単に導入できますね。&lt;/p&gt;
+&lt;h2 id=&#34;締め&#34;&gt;締め&lt;/h2&gt;
+&lt;p&gt;めっちゃ簡単にできて、かなり有用なアプリになりそうですね。ただ、これを導入するとなるとコストが気になりますね。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/post/aichatbot/plan.png&#34;
+	width=&#34;1611&#34;
+	height=&#34;585&#34;
+	srcset=&#34;https://kawa-d.github.io/post/aichatbot/plan_hu1f00f9a761dd144370598d259e743e7d_47750_480x0_resize_box_3.png 480w, https://kawa-d.github.io/post/aichatbot/plan_hu1f00f9a761dd144370598d259e743e7d_47750_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;plan.png&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;275&#34;
+		data-flex-basis=&#34;660px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;miiboは以下の項目でプランが変わってきます。特に、会話上限とデータストア登録数で変動します。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;作成エージェント数&lt;/li&gt;
+&lt;li&gt;月当たりの会話上限の目安&lt;/li&gt;
+&lt;li&gt;登録トピック数上限&lt;/li&gt;
+&lt;li&gt;シナリオ上限&lt;/li&gt;
+&lt;li&gt;プロンプト最大文字数&lt;/li&gt;
+&lt;li&gt;データストア登録可能数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;一番気になるのは問い合わせの会話がどれくらいの頻度でするのかってとこですかね。&lt;/p&gt;
+&lt;p&gt;ざっくりと計算したところ、営業日計算で1日平均4.5件の問い合わせスレが立ち上がっていました。スレが立ち上がってさらに会話するとして、1スレにつき、10会話とします。月の営業日を20日として、20 × 4.5 × 10 = 900。
+月900会話の問い合わせが来てますね。&lt;/p&gt;
+&lt;p&gt;意外と突き当りの会話上限はホビープランの月2800円でも耐えれそうですが、他の項目がどうなんだろう。いつか計算しよう。（多分しない。）&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>HugoとGithub Pageでブログ用サイト作ってみました</title>
         <link>https://kawa-d.github.io/post/hello-world/</link>
         <pubDate>Sun, 09 Jul 2023 00:00:00 +0000</pubDate>

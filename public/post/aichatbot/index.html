@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='ヘルプデスク作業'>
+<title>＜miibo＞社内問い合わせをAIが自動回答するchatbot作ってみた</title>
+
+<link rel='canonical' href='https://kawa-d.github.io/post/aichatbot/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='＜miibo＞社内問い合わせをAIが自動回答するchatbot作ってみた'>
+<meta property='og:description' content='ヘルプデスク作業'>
+<meta property='og:url' content='https://kawa-d.github.io/post/aichatbot/'>
+<meta property='og:site_name' content='kawaD'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2023-07-11T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2023-07-11T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="＜miibo＞社内問い合わせをAIが自動回答するchatbot作ってみた">
+<meta name="twitter:description" content="ヘルプデスク作業">
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column compact"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_huda2458f72ce188392d75c5d51cd8e24e_373_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">kawaD</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='https://github.com/kawa-d' target="_blank">
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                
+                <span>GitHub</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='https://twitter.com/kawaD189' target="_blank">
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                
+                <span>Twitter</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/aichatbot/">＜miibo＞社内問い合わせをAIが自動回答するchatbot作ってみた</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            ヘルプデスク作業
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jul 11, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="ヘルプデスク作業">ヘルプデスク作業</h2>
+<p>ヘルプデスク作業って少し好きで、誰かの困り事をどうしたどうした？と寄り添って、それを解決すると「ありがとうございます！」なんて言われると、いやー今日も仕事したな～って気分になりますよね。</p>
+<p>でも、問い合わせ内容によっては、再起動すれば治るような事や、社内ドキュメント読めばわかるような事も結構あり、ただ時間だけとられて、情シス的にやりたいことが後回しになり、結局なんにもできなかった。という事があります。</p>
+<p>ドキュメントは結構そろってるのにあんまり理解されないし読んでくれない。どうすればみんな自動的に欲しいデータを取ってくれるのか&hellip;.</p>
+<p>このAI革命時代に何かできることはないかな～と探していると、会社のAIトピックを扱ってるSlackチャンネルにてmiiboの話が出ていて、AIを使ったchatbotがプログラム不要で作れて、Slackともサクッと連携可能！とのことだったので、これならできそう！chatbotならみんながハッピーになりそう！やってみよう！となりました。</p>
+<p><a class="link" href="https://note.com/makunugi/n/n2a393732cd36"  target="_blank" rel="noopener"
+    >このnoteにこれからやる事すべて書いてあります。</a></p>
+<h2 id="弊社の社内問い合わせについて">弊社の社内問い合わせについて</h2>
+<p>Slackのワークフローで問い合わせ受けて、スレッドで回答するような形で社内の問い合わせ対応を行ってます。2年前くらいから、ログを取っているためそれをベースに試していきます。</p>
+<p>簡単なところからスタートしていきたいので、まずはPCの問い合わせに絞って返答できるようにしていきます。</p>
+<p>今回使うmiiboは専門性の高い問い合わせに対して返事してくれます。</p>
+<p>例えば、弊社のPCはレンタルしていて、返却にまつわる問い合わせも受けるときがあり、返却する際はリモートワークもあるため個人がレンタル会社へ送ってもらっています。なので「返却はここに送ってください～。住所：XXX」などのような弊社でしか使わない運用知識をカバーできるのを期待して作っていきます。</p>
+<h2 id="miibo登録してchatbot作成">miibo登録してchatbot作成</h2>
+<p><a class="link" href="https://miibo.jp/"  target="_blank" rel="noopener"
+    >miibo</a></p>
+<p>miiboにサインアップしてchatbotを新規作成します。今回は推奨されてる通常モードで作成しました。</p>
+<p>答えれない質問はGPT4によって自動回答するような設定もできます。</p>
+<p>また、miiboのプラン（お金）によって精度高さを選び、会話回数に上限が設けられています。今回使用する無料枠は一番精度の高いGPT-4で約月15回くらい会話ができました。</p>
+<p>キャラ設定もします。一人称とか口調を設定できるようです。関西弁とかもできました。</p>
+<p>色々設定して、めちゃくちゃなAIキャラクター、Famuさんできました。</p>
+<p><img src="/post/aichatbot/famu_kaiwa.png"
+	width="1390"
+	height="460"
+	srcset="/post/aichatbot/famu_kaiwa_hu4a7bc3a78cf0b7f1ed2a8a33ba96ca19_33337_480x0_resize_box_3.png 480w, /post/aichatbot/famu_kaiwa_hu4a7bc3a78cf0b7f1ed2a8a33ba96ca19_33337_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="famu_kaiwa.png"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="302"
+		data-flex-basis="725px"
+	
+></p>
+<h2 id="ナレッジを追加する">ナレッジを追加する</h2>
+<p>miiboにはナレッジデータストアという、GPT-4やGPT-3.5といったAIモデルを利用したチャットボットに、「知識」を与えることができる機能があります。</p>
+<p>ナレッジを追加するとそのナレッジをベースに答えてくれるので、ナレッジに社内の運用知識を追加していきます。</p>
+<p>PCの問い合わせ内容の中で一般的な技術的な知識で解決できそうなものは、本来のGPT4の力を借りたほうが最適な回答や一次対応をしてくれそうでした。実際にあった社内の問い合わせを何もナレッジ追加せず聞いてみます。</p>
+<p><img src="/post/aichatbot/inquiry1.png"
+	width="1363"
+	height="736"
+	srcset="/post/aichatbot/inquiry1_hud46bcfe751c0a8173ea155e410ddbc46_65389_480x0_resize_box_3.png 480w, /post/aichatbot/inquiry1_hud46bcfe751c0a8173ea155e410ddbc46_65389_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="inquiry1.png"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="185"
+		data-flex-basis="444px"
+	
+></p>
+<p>めっちゃいい！実際、この時はルーター再起動で直りました。</p>
+<p>次に、自分たちしかわからないような運用知識ってなんだ？と絞りながら問い合わせを見返すと、以下の項目を覚えさせたら良さそうでした。</p>
+<h4 id="レンタルpcの運用回答">レンタルPCの運用回答</h4>
+<p>PCは外部からレンタルしていて、２年単位で回してます。</p>
+<p>具体的にどんな問い合わせかというと、</p>
+<ul>
+<li>「退職者のPCはどうすればいいですか？」</li>
+<li>「新しいMacはいつ届きますか？」</li>
+<li>「Macが不調で切り替えを早くしたいですが可能ですか？」</li>
+<li>「PCの画面割れしてしまいました。修理はどうすればよいでしょうか？」</li>
+</ul>
+<p>これらの問い合わせに対して一次対応は、ほぼ同じ回答になるため、これ答えてくれるとうれしいですね。</p>
+<p>意外と、PCに限った社内知識となるとこれしかなく、後は先ほどGPT4のみの回答でどうにかなりそうな問い合わせでした。（アカウント申請や、ネットワーク周りなど含めるともっとありますが、今回はPC運用のみで試してみます。）</p>
+<h5 id="ナレッジ入れてみる">ナレッジ入れてみる</h5>
+<p><img src="/post/aichatbot/knowledge.png"
+	width="819"
+	height="460"
+	srcset="/post/aichatbot/knowledge_hu0453d256002469b27b94f4c02cc04395_23549_480x0_resize_box_3.png 480w, /post/aichatbot/knowledge_hu0453d256002469b27b94f4c02cc04395_23549_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="knowledge.png"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="178"
+		data-flex-basis="427px"
+	
+></p>
+<p>ナレッジをこんな感じでダーッと文章で手入力で入れました。手入力以外でも、URL指定、CSV形式、API経由などデータを入れる方法はいくつかありました。</p>
+<p>では、問い合わせてみます。「退職者のPCはどうすればいいですか？」という問い合わせについて確認していきます。</p>
+<p>まずはナレッジがない場合の回答がこちら。</p>
+<p><img src="/post/aichatbot/inquiry2.png"
+	width="1380"
+	height="560"
+	srcset="/post/aichatbot/inquiry2_hu021faa5dd3c3671130a8e6514df11ec7_45511_480x0_resize_box_3.png 480w, /post/aichatbot/inquiry2_hu021faa5dd3c3671130a8e6514df11ec7_45511_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="inquiry2.png"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="246"
+		data-flex-basis="591px"
+	
+></p>
+<p>うーん、ユーザーがする事というより、端末管理者がやる事についての回答になってますね。</p>
+<p>次にナレッジがある場合の回答がこちら。</p>
+<p><img src="/post/aichatbot/inquiry4.png"
+	width="1324"
+	height="460"
+	srcset="/post/aichatbot/inquiry4_hu5d4191b15c4f937d7d38ca8a7e74b0fc_29992_480x0_resize_box_3.png 480w, /post/aichatbot/inquiry4_hu5d4191b15c4f937d7d38ca8a7e74b0fc_29992_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="inquiry4.png"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="287"
+		data-flex-basis="690px"
+	
+></p>
+<p>「しらんけど」ｗ</p>
+<p>これ自分がいれた設定なんですが、ちょっとムカつきますね。ただ、回答としては、とても良い回答で社内運用に沿った内容になりました！すごーい。</p>
+<h2 id="slack連携してみる">slack連携してみる</h2>
+<p>冒頭で記載したnoteの記事にある、<a class="link" href="https://note.com/makunugi/n/n2a393732cd36?magazine_key=m125bbb29d4ac"  target="_blank" rel="noopener"
+    >Slackボット追加編</a>　に全部書いてますのでそれに沿ってやっていきます。</p>
+<p>このFamuさんを限定公開か、一般公開すれば外部サービスとの連携ができます。限定公開は、オーナーと管理者のみチャット画面が公開され、外部サービス連携は可能になるような設定です。限定公開で進めていきます。</p>
+<p>noteに詳しく書いてるので、パチパチと設定を入れていきました。</p>
+<p>実際にslackでFamuさんを呼び出してみます。</p>
+<p><img src="/post/aichatbot/inquiry_slack.png"
+	width="819"
+	height="460"
+	srcset="/post/aichatbot/inquiry_slack_huc7fa4929ea374b8cc5886d1db5dec291_71297_480x0_resize_box_3.png 480w, /post/aichatbot/inquiry_slack_huc7fa4929ea374b8cc5886d1db5dec291_71297_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="inquiry_slack.png"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="178"
+		data-flex-basis="427px"
+	
+></p>
+<p>いや～すごい！一日あれば簡単に導入できますね。</p>
+<h2 id="締め">締め</h2>
+<p>めっちゃ簡単にできて、かなり有用なアプリになりそうですね。ただ、これを導入するとなるとコストが気になりますね。</p>
+<p><img src="/post/aichatbot/plan.png"
+	width="1611"
+	height="585"
+	srcset="/post/aichatbot/plan_hu1f00f9a761dd144370598d259e743e7d_47750_480x0_resize_box_3.png 480w, /post/aichatbot/plan_hu1f00f9a761dd144370598d259e743e7d_47750_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="plan.png"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="275"
+		data-flex-basis="660px"
+	
+></p>
+<p>miiboは以下の項目でプランが変わってきます。特に、会話上限とデータストア登録数で変動します。</p>
+<ul>
+<li>作成エージェント数</li>
+<li>月当たりの会話上限の目安</li>
+<li>登録トピック数上限</li>
+<li>シナリオ上限</li>
+<li>プロンプト最大文字数</li>
+<li>データストア登録可能数</li>
+</ul>
+<p>一番気になるのは問い合わせの会話がどれくらいの頻度でするのかってとこですかね。</p>
+<p>ざっくりと計算したところ、営業日計算で1日平均4.5件の問い合わせスレが立ち上がっていました。スレが立ち上がってさらに会話するとして、1スレにつき、10会話とします。月の営業日を20日として、20 × 4.5 × 10 = 900。
+月900会話の問い合わせが来てますね。</p>
+<p>意外と突き当りの会話上限はホビープランの月2800円でも耐えれそうですが、他の項目がどうなんだろう。いつか計算しよう。（多分しない。）</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 kawaD
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
