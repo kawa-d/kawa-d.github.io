@@ -31,14 +31,14 @@
 &lt;p&gt;答えれない質問はGPT4によって自動回答するような設定もできます。&lt;/p&gt;
 &lt;p&gt;また、miiboのプラン（お金）によって精度高さを選び、会話回数に上限が設けられています。今回使用する無料枠は一番精度の高いGPT-4で約月15回くらい会話ができました。&lt;/p&gt;
 &lt;p&gt;キャラ設定もします。一人称とか口調を設定できるようです。関西弁とかもできました。&lt;/p&gt;
-&lt;p&gt;色々設定して、めちゃくちゃなAIキャラクター、Famuさんできました。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/post/aichatbot/famu_kaiwa.png&#34;
+&lt;p&gt;色々設定して、めちゃくちゃなAIchatbotできました。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/post/aichatbot/kaiwa.png&#34;
 	width=&#34;1390&#34;
 	height=&#34;460&#34;
-	srcset=&#34;https://kawa-d.github.io/post/aichatbot/famu_kaiwa_hu4a7bc3a78cf0b7f1ed2a8a33ba96ca19_33337_480x0_resize_box_3.png 480w, https://kawa-d.github.io/post/aichatbot/famu_kaiwa_hu4a7bc3a78cf0b7f1ed2a8a33ba96ca19_33337_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://kawa-d.github.io/post/aichatbot/kaiwa_hu4a7bc3a78cf0b7f1ed2a8a33ba96ca19_33337_480x0_resize_box_3.png 480w, https://kawa-d.github.io/post/aichatbot/kaiwa_hu4a7bc3a78cf0b7f1ed2a8a33ba96ca19_33337_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;famu_kaiwa.png&#34;
+		alt=&#34;kaiwa.png&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -130,9 +130,9 @@
 &lt;h2 id=&#34;slack連携してみる&#34;&gt;slack連携してみる&lt;/h2&gt;
 &lt;p&gt;冒頭で記載したnoteの記事にある、&lt;a class=&#34;link&#34; href=&#34;https://note.com/makunugi/n/n2a393732cd36?magazine_key=m125bbb29d4ac&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Slackボット追加編&lt;/a&gt;　に全部書いてますのでそれに沿ってやっていきます。&lt;/p&gt;
-&lt;p&gt;このFamuさんを限定公開か、一般公開すれば外部サービスとの連携ができます。限定公開は、オーナーと管理者のみチャット画面が公開され、外部サービス連携は可能になるような設定です。限定公開で進めていきます。&lt;/p&gt;
+&lt;p&gt;このchatbotを限定公開か、一般公開すれば外部サービスとの連携ができます。限定公開は、オーナーと管理者のみチャット画面が公開され、外部サービス連携は可能になるような設定です。限定公開で進めていきます。&lt;/p&gt;
 &lt;p&gt;noteに詳しく書いてるので、パチパチと設定を入れていきました。&lt;/p&gt;
-&lt;p&gt;実際にslackでFamuさんを呼び出してみます。&lt;/p&gt;
+&lt;p&gt;実際にslackでchatbotを呼び出してみます。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/post/aichatbot/inquiry_slack.png&#34;
 	width=&#34;819&#34;
 	height=&#34;460&#34;
