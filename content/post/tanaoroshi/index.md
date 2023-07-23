@@ -85,7 +85,9 @@ SlackのAPIトークンをGithubのSecretに保存して管理下に置いたん
 
 次にecho-members.shを作成して、slackのワークスペースにいるuserを取ってきます。
 
-###　シェルスクリプト
+
+### シェルスクリプト作成
+
 
 `./scripts/echo-members.sh`のようなディレクトリ構成でシェルスクリプトを作成します。
 
