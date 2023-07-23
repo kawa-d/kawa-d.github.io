@@ -1,4 +1,0 @@
-baseURL = 'https://kawa-d.github.io/'
-languageCode = 'en-us'
-title = 'kawaD'
-theme = 'hugo-theme-stack'
