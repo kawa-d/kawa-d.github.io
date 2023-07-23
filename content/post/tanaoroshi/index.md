@@ -89,6 +89,8 @@ SlackのAPIトークンをGithubのSecretに保存して管理下に置いたん
 ### シェルスクリプト作成
 
 
+次にシェルスクリプト作成します。
+
 `./scripts/echo-members.sh`のようなディレクトリ構成でシェルスクリプトを作成します。
 
 Ubuntu呼び出してるので、RubyとかJavascriptの環境も作れるようですが、ここではshellでサクッとやっていきます。
