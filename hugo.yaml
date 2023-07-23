@@ -61,7 +61,7 @@ params:
         avatar:
             enabled: true
             local: true
-            src: img/icon-kawa-d.JPG
+            src: assets/icon-kawa-d.JPG
 
     article:
         math: true
