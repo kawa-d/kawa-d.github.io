@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  
-  <sitemap>
-    <loc>https://kawa-d.github.io/en/sitemap.xml</loc>
-    
-      <lastmod>2023-07-20T00:00:00+00:00</lastmod>
-    
-  </sitemap>
-  
-  <sitemap>
-    <loc>https://kawa-d.github.io/zh-cn/sitemap.xml</loc>
-    
-  </sitemap>
-  
-  <sitemap>
-    <loc>https://kawa-d.github.io/ar/sitemap.xml</loc>
-    
-  </sitemap>
-  
-</sitemapindex>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://kawa-d.github.io/p/github-action%E4%BD%BF%E3%81%A3%E3%81%A6slack-api-%E5%8F%A9%E3%81%84%E3%81%A6%E3%81%BF%E3%81%9F/</loc>
+    <lastmod>2023-07-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kawa-d.github.io/</loc>
+    <lastmod>2023-07-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kawa-d.github.io/post/</loc>
+    <lastmod>2023-07-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/</loc>
+    <lastmod>2023-07-11T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kawa-d.github.io/p/hugo%E3%81%A8github-page%E3%81%A7%E3%83%96%E3%83%AD%E3%82%B0%E7%94%A8%E3%82%B5%E3%82%A4%E3%83%88%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%BE%E3%81%97%E3%81%9F/</loc>
+    <lastmod>2023-07-09T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kawa-d.github.io/categories/</loc>
+  </url><url>
+    <loc>https://kawa-d.github.io/tags/</loc>
+  </url>
+</urlset>
