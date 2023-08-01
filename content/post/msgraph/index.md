@@ -2,7 +2,7 @@
 title: Microsoft Graph使ってAzureADユーザーを新規作成してみた
 description: 自動化したい
 date: 2023-07-29 00:00:00+0000
-draft: true
+draft: false
 # categories:
 #     - Example Category
 # tags:
