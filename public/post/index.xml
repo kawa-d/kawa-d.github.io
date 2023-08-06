@@ -6,13 +6,164 @@
         <description>Recent content in Posts on kawaD</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>ja</language>
-        <lastBuildDate>Thu, 20 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://kawa-d.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 29 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://kawa-d.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Microsoft Graph使ってAzureADユーザーを新規作成してみた</title>
+        <link>https://kawa-d.github.io/p/msgraph/</link>
+        <pubDate>Sat, 29 Jul 2023 00:00:00 +0000</pubDate>
+        
+        <guid>https://kawa-d.github.io/p/msgraph/</guid>
+        <description>&lt;h2 id=&#34;microsft-graph&#34;&gt;Microsft Graph&lt;/h2&gt;
+&lt;p&gt;・&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/ja-jp/graph/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Microsft Graph&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Microsoftの各サービスに対してスクリプトやコマンドを使ってリクエストを送信するには、Microsoft Graphを活用します。Microsoft Graphは、Microsoftのさまざまなサービスへの統一的なアクセスを提供するプラットフォームです。&lt;/p&gt;
+&lt;p&gt;今回は、PowerShellを使ってAzure ADの新しいユーザーを作成してみました。&lt;/p&gt;
+&lt;h2 id=&#34;powershell&#34;&gt;PowerShell&lt;/h2&gt;
+&lt;p&gt;ざっくり下記やる事書き起こします。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Microsoft GraphのSDKをインストール&lt;/li&gt;
+&lt;li&gt;Azure上にMSGraphへ接続するためのアプリ作成・接続・認証する&lt;/li&gt;
+&lt;li&gt;AzureADのアカウントを作成するスクリプト作成・実行する&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;microsoft-graphのsdkをインストール&#34;&gt;Microsoft GraphのSDKをインストール&lt;/h3&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/ja-jp/powershell/microsoftgraph/overview?toc=%2Fgraph%2Ftoc.json&amp;amp;view=graph-powershell-1.0&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;参考MS公式ドキュメント&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;まずpowershellを管理者権限で開いてSDKをインストールします。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# SDKインストール&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Install-Package Microsoft.Graph
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# インストールされてたらバージョン確認できる&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Get-InstalledModule Microsoft.Graph 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;もし、エラーでInstallできない場合、PowerShell 実行ポリシーを変えるとpowershellのコマンドやスクリプトが実行できます。
+（自分はここでハマりました。）&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;・&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/ja-jp/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.3&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;実行ポリシー公式ドキュメント&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;azure上にmsgraphへ接続するためのアプリ作成&#34;&gt;Azure上にMSGraphへ接続するためのアプリ作成&lt;/h3&gt;
+&lt;p&gt;次にAzureのポータルサイトに入り、MSGraph用のアプリを作成します。&lt;/p&gt;
+&lt;p&gt;アプリ作成の手順は&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/ja-jp/powershell/microsoftgraph/app-only?view=graph-powershell-1.0&amp;amp;tabs=azure-portal&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;こちら&lt;/a&gt;を参考にして進めます。&lt;/p&gt;
+&lt;p&gt;手順10の&lt;code&gt;Select Certificates &amp;amp; secrets under Manage. Select Upload certificate under Certificates. Browse to your certificate&#39;s public key file and select Add.&lt;/code&gt; というのでハマり、証明書をアップロードってどうするの？と壁にぶち当たりました。&lt;/p&gt;
+&lt;p&gt;下記手順で自己証明書を発行してアップロードします。(&lt;a class=&#34;link&#34; href=&#34;https://jpazureid.github.io/blog/azure-active-directory/operating-license-with-microsoft-graph/#idx2-2&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;こちらのサイト&lt;/a&gt;から引用してます。)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$mycert&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; New-SelfSignedCertificate -Subject &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=SelfSignedCert&amp;#34;&lt;/span&gt; -CertStoreLocation &lt;span class=&#34;s2&#34;&gt;&amp;#34;Cert:\CurrentUser\My&amp;#34;&lt;/span&gt;  -KeyExportPolicy Exportable -KeySpec Signature
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#ここで出力されたファイルをアップロードする&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$mycert&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; Export-Certificate -FilePath &lt;span class=&#34;s2&#34;&gt;&amp;#34;.\SelfSignedCert.cer&amp;#34;&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$mycert&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; Select Thumbprint
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;上記コマンド生成した、SelfSignedCert.cerをアプリにアップロードします。&lt;/p&gt;
+&lt;p&gt;あとは、下記コマンドでAzure ADに接続できます。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Connect-MgGraph -Clientid &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;lt;登録したアプリのアプリケーション (クライアント) ID&amp;gt;&amp;#34;&lt;/span&gt; -TenantId &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;lt;アプリを登録したテナントのディレクトリ (テナント) ID&amp;gt;&amp;#34;&lt;/span&gt; -CertificateThumbprint &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;lt;証明書の拇印&amp;gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Import-Module -Name Microsoft.Graph.Users
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;この辺の接続周りは先ほど紹介したMicrosoftのサポートブログを参考にしたほうがわかりやすいです。&lt;/p&gt;
+&lt;p&gt;・&lt;a class=&#34;link&#34; href=&#34;https://jpazureid.github.io/blog/azure-active-directory/operating-license-with-microsoft-graph/#idx2-2&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Microsoft Graph PowerShell SDK を使用したライセンス管理操作の紹介&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;azureadのアカウントを作成するスクリプト実行する&#34;&gt;AzureADのアカウントを作成するスクリプト実行する&lt;/h3&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/ja-jp/graph/api/group-post-members?view=graph-rest-1.0&amp;amp;tabs=http&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;こちらのドキュメント&lt;/a&gt;に沿って&lt;code&gt;newAzureUser.ps1&lt;/code&gt;というファイル作成して、ユーザー作成のコードを書いてきます。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Import-Module&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Microsoft&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;Graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;py&#34;&gt;Users&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$params&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;vm&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;c&#34;&gt;# アカウントを有効&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;n&#34;&gt;accountEnabled&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;vm&#34;&gt;$true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;c&#34;&gt;# 表示名&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;n&#34;&gt;displayName&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;edamame&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;n&#34;&gt;mailNickname&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;edamame&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;c&#34;&gt;# メールアドレス&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;n&#34;&gt;userPrincipalName&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;edamame@AAA.CCCC.BBB.com&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;c&#34;&gt;#　パスワード&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;n&#34;&gt;passwordProfile&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;vm&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;		&lt;span class=&#34;n&#34;&gt;forceChangePasswordNextSignIn&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;vm&#34;&gt;$true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;		&lt;span class=&#34;n&#34;&gt;password&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;任意でパスワードを入れます&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;New-MgUser&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-BodyParameter&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$params&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;上記実行すると、edamameさんが作成されました。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/msgraph/edamame.png&#34;
+	width=&#34;718&#34;
+	height=&#34;331&#34;
+	srcset=&#34;https://kawa-d.github.io/p/msgraph/edamame_hu6a361a6aabddeb3d41213388ab95d698_23197_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/msgraph/edamame_hu6a361a6aabddeb3d41213388ab95d698_23197_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;edamame.png&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;216&#34;
+		data-flex-basis=&#34;520px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;締め&#34;&gt;締め&lt;/h2&gt;
+&lt;p&gt;ユーザー新規作成リクエストは別にpowershellじゃなくてもできるため、javascript使ってスプレッドシートにある入社情報からGASで実行するとか、Githubに社員台帳持っていて、actions回して棚卸とか色々自動化できそうでした。&lt;/p&gt;
+&lt;p&gt;powershellはこういった自動化というよりかは、調査のためにwindows端末から手軽にアクセスするっていうので使ったほうが良さそうですね。&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>github action使ってslack api 叩いてみた。</title>
-        <link>https://kawa-d.github.io/p/github-action%E4%BD%BF%E3%81%A3%E3%81%A6slack-api-%E5%8F%A9%E3%81%84%E3%81%A6%E3%81%BF%E3%81%9F/</link>
+        <link>https://kawa-d.github.io/p/tanaoroshi/</link>
         <pubDate>Thu, 20 Jul 2023 00:00:00 +0000</pubDate>
         
-        <guid>https://kawa-d.github.io/p/github-action%E4%BD%BF%E3%81%A3%E3%81%A6slack-api-%E5%8F%A9%E3%81%84%E3%81%A6%E3%81%BF%E3%81%9F/</guid>
-        <description>&lt;img src="https://kawa-d.github.io/p/github-action%E4%BD%BF%E3%81%A3%E3%81%A6slack-api-%E5%8F%A9%E3%81%84%E3%81%A6%E3%81%BF%E3%81%9F/tanaoroshi.png" alt="Featured image of post github action使ってslack api 叩いてみた。" /&gt;&lt;h2 id=&#34;アカウント棚卸&#34;&gt;アカウント棚卸&lt;/h2&gt;
+        <guid>https://kawa-d.github.io/p/tanaoroshi/</guid>
+        <description>&lt;img src="https://kawa-d.github.io/p/tanaoroshi/tanaoroshi.png" alt="Featured image of post github action使ってslack api 叩いてみた。" /&gt;&lt;h2 id=&#34;アカウント棚卸&#34;&gt;アカウント棚卸&lt;/h2&gt;
 &lt;p&gt;情シスを担当していると、SaaSアカウントの棚卸作業は非常に退屈ですよね。そこで、自動化できないかと考え、GitHub Actionsを利用してみることにしました。&lt;/p&gt;
 &lt;p&gt;GitHub Actionsを使用して、SlackのAPIを叩いてワークスペースのメンバーを出力することを試してみました。（棚卸までの機能はまだ完全ではありませんが、とりあえず試してみました）&lt;/p&gt;
 &lt;p&gt;内製せずに一括管理できるSaaSアカウント管理サービスも存在しますが、GitHub Actionsの動かし方に興味が湧いたので、試しに実行してみました。&lt;/p&gt;
@@ -142,10 +293,10 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;これをGithubにあげて、ワークフローを手動実行してみます。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/github-action%E4%BD%BF%E3%81%A3%E3%81%A6slack-api-%E5%8F%A9%E3%81%84%E3%81%A6%E3%81%BF%E3%81%9F/response.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/tanaoroshi/response.png&#34;
 	width=&#34;1279&#34;
 	height=&#34;726&#34;
-	srcset=&#34;https://kawa-d.github.io/p/github-action%E4%BD%BF%E3%81%A3%E3%81%A6slack-api-%E5%8F%A9%E3%81%84%E3%81%A6%E3%81%BF%E3%81%9F/response_huce259cb291712afccb2b55b9e0a14594_45680_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/github-action%E4%BD%BF%E3%81%A3%E3%81%A6slack-api-%E5%8F%A9%E3%81%84%E3%81%A6%E3%81%BF%E3%81%9F/response_huce259cb291712afccb2b55b9e0a14594_45680_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://kawa-d.github.io/p/tanaoroshi/response_huce259cb291712afccb2b55b9e0a14594_45680_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/tanaoroshi/response_huce259cb291712afccb2b55b9e0a14594_45680_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;response.png&#34;
@@ -163,10 +314,10 @@
         </item>
         <item>
         <title>＜miibo＞社内問い合わせをAIが自動回答するchatbot作ってみた</title>
-        <link>https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/</link>
+        <link>https://kawa-d.github.io/p/aichatbot/</link>
         <pubDate>Tue, 11 Jul 2023 00:00:00 +0000</pubDate>
         
-        <guid>https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/</guid>
+        <guid>https://kawa-d.github.io/p/aichatbot/</guid>
         <description>&lt;h2 id=&#34;ヘルプデスク作業&#34;&gt;ヘルプデスク作業&lt;/h2&gt;
 &lt;p&gt;ヘルプデスク作業って少し好きで、誰かの困り事をどうしたどうした？と寄り添って、それを解決すると「ありがとうございます！」なんて言われると、いやー今日も仕事したな～って気分になりますよね。&lt;/p&gt;
 &lt;p&gt;でも、問い合わせ内容によっては、再起動すれば治るような事や、社内ドキュメント読めばわかるような事も結構あり、ただ時間だけとられて、情シス的にやりたいことが後回しになり、結局なんにもできなかった。という事があります。&lt;/p&gt;
@@ -182,10 +333,10 @@
 &lt;p&gt;また、miiboのプラン（お金）によって精度高さを選び、会話回数に上限が設けられています。今回使用する無料枠は一番精度の高いGPT-4で約月15回くらい会話ができました。&lt;/p&gt;
 &lt;p&gt;キャラ設定もします。一人称とか口調を設定できるようです。関西弁とかもできました。&lt;/p&gt;
 &lt;p&gt;色々設定して、めちゃくちゃなAIchatbotできました。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/kaiwa.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/aichatbot/kaiwa.png&#34;
 	width=&#34;1390&#34;
 	height=&#34;460&#34;
-	srcset=&#34;https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/kaiwa_hu4a7bc3a78cf0b7f1ed2a8a33ba96ca19_33337_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/kaiwa_hu4a7bc3a78cf0b7f1ed2a8a33ba96ca19_33337_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://kawa-d.github.io/p/aichatbot/kaiwa_hu4a7bc3a78cf0b7f1ed2a8a33ba96ca19_33337_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/aichatbot/kaiwa_hu4a7bc3a78cf0b7f1ed2a8a33ba96ca19_33337_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;kaiwa.png&#34;
@@ -202,10 +353,10 @@
 &lt;p&gt;今回はPCに関する問い合わせについて構築していきます。&lt;/p&gt;
 &lt;p&gt;PCの問い合わせ内容の中で一般的な技術的な知識で解決できそうなものは、本来のGPT4の力を借りたほうが最適な回答や一次対応をしてくれそうでした。&lt;/p&gt;
 &lt;p&gt;例えば下記のような「インターネットに接続できなくなりました」という問い合わせの一次対応はどの会社でも同じような形かと思います。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/inquiry1.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/aichatbot/inquiry1.png&#34;
 	width=&#34;1363&#34;
 	height=&#34;736&#34;
-	srcset=&#34;https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/inquiry1_hud46bcfe751c0a8173ea155e410ddbc46_65389_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/inquiry1_hud46bcfe751c0a8173ea155e410ddbc46_65389_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://kawa-d.github.io/p/aichatbot/inquiry1_hud46bcfe751c0a8173ea155e410ddbc46_65389_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/aichatbot/inquiry1_hud46bcfe751c0a8173ea155e410ddbc46_65389_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;inquiry1.png&#34;
@@ -229,10 +380,10 @@
 &lt;/ul&gt;
 &lt;p&gt;これらの問い合わせに対して一次対応は、ほぼ同じ回答になるため、これ答えてくれるとうれしいですね。&lt;/p&gt;
 &lt;h5 id=&#34;ナレッジ入れてみる&#34;&gt;ナレッジ入れてみる&lt;/h5&gt;
-&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/knowledge.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/aichatbot/knowledge.png&#34;
 	width=&#34;819&#34;
 	height=&#34;460&#34;
-	srcset=&#34;https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/knowledge_hu7f9baab7d7fe80b0c3212ad1c2e635e0_22929_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/knowledge_hu7f9baab7d7fe80b0c3212ad1c2e635e0_22929_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://kawa-d.github.io/p/aichatbot/knowledge_hu7f9baab7d7fe80b0c3212ad1c2e635e0_22929_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/aichatbot/knowledge_hu7f9baab7d7fe80b0c3212ad1c2e635e0_22929_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;knowledge.png&#34;
@@ -246,10 +397,10 @@
 &lt;p&gt;ナレッジをこんな感じでダーッと文章で手入力で入れました。手入力以外でも、URL指定、CSV形式、API経由などデータを入れる方法はいくつかありました。&lt;/p&gt;
 &lt;p&gt;では、問い合わせてみます。「退職者のPCはどうすればいいですか？」という問い合わせについて確認していきます。&lt;/p&gt;
 &lt;p&gt;まずはナレッジがない場合の回答がこちら。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/inquiry2.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/aichatbot/inquiry2.png&#34;
 	width=&#34;1380&#34;
 	height=&#34;560&#34;
-	srcset=&#34;https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/inquiry2_hu021faa5dd3c3671130a8e6514df11ec7_45511_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/inquiry2_hu021faa5dd3c3671130a8e6514df11ec7_45511_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://kawa-d.github.io/p/aichatbot/inquiry2_hu021faa5dd3c3671130a8e6514df11ec7_45511_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/aichatbot/inquiry2_hu021faa5dd3c3671130a8e6514df11ec7_45511_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;inquiry2.png&#34;
@@ -262,10 +413,10 @@
 &gt;&lt;/p&gt;
 &lt;p&gt;うーん、ユーザーがする事というより、端末管理者がやる事についての回答になってますね。&lt;/p&gt;
 &lt;p&gt;次にナレッジがある場合の回答がこちら。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/inquiry4.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/aichatbot/inquiry4.png&#34;
 	width=&#34;1385&#34;
 	height=&#34;460&#34;
-	srcset=&#34;https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/inquiry4_hu8e567e16c4ac8b96c648509f0e3cd3c1_32088_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/inquiry4_hu8e567e16c4ac8b96c648509f0e3cd3c1_32088_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://kawa-d.github.io/p/aichatbot/inquiry4_hu8e567e16c4ac8b96c648509f0e3cd3c1_32088_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/aichatbot/inquiry4_hu8e567e16c4ac8b96c648509f0e3cd3c1_32088_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;inquiry4.png&#34;
@@ -285,10 +436,10 @@
 &lt;p&gt;このchatbotを限定公開か、一般公開すれば外部サービスとの連携ができます。限定公開は、オーナーと管理者のみチャット画面が公開され、外部サービス連携は可能になるような設定です。限定公開で進めていきます。&lt;/p&gt;
 &lt;p&gt;noteに詳しく書いてるので、パチパチと設定を入れていきました。&lt;/p&gt;
 &lt;p&gt;実際にslackでchatbotを呼び出してみます。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/inquiry_slack.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/aichatbot/inquiry_slack.png&#34;
 	width=&#34;819&#34;
 	height=&#34;460&#34;
-	srcset=&#34;https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/inquiry_slack_hu771748b264411ce0f6f768f124c3195e_72660_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/inquiry_slack_hu771748b264411ce0f6f768f124c3195e_72660_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://kawa-d.github.io/p/aichatbot/inquiry_slack_hu771748b264411ce0f6f768f124c3195e_72660_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/aichatbot/inquiry_slack_hu771748b264411ce0f6f768f124c3195e_72660_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;inquiry_slack.png&#34;
@@ -302,10 +453,10 @@
 &lt;p&gt;いや～すごい！一日あれば簡単に導入できますね。&lt;/p&gt;
 &lt;h2 id=&#34;締め&#34;&gt;締め&lt;/h2&gt;
 &lt;p&gt;めっちゃ簡単にできて、かなり有用なアプリになりそうですね。ただ、これを導入するとなるとコストが気になりますね。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/plan.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/aichatbot/plan.png&#34;
 	width=&#34;1611&#34;
 	height=&#34;585&#34;
-	srcset=&#34;https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/plan_hu1f00f9a761dd144370598d259e743e7d_47750_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/miibo%E7%A4%BE%E5%86%85%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%82%92ai%E3%81%8C%E8%87%AA%E5%8B%95%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8Bchatbot%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F/plan_hu1f00f9a761dd144370598d259e743e7d_47750_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://kawa-d.github.io/p/aichatbot/plan_hu1f00f9a761dd144370598d259e743e7d_47750_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/aichatbot/plan_hu1f00f9a761dd144370598d259e743e7d_47750_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;plan.png&#34;
@@ -331,10 +482,10 @@
         </item>
         <item>
         <title>HugoとGithub Pageでブログ用サイト作ってみました</title>
-        <link>https://kawa-d.github.io/p/hugo%E3%81%A8github-page%E3%81%A7%E3%83%96%E3%83%AD%E3%82%B0%E7%94%A8%E3%82%B5%E3%82%A4%E3%83%88%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%BE%E3%81%97%E3%81%9F/</link>
+        <link>https://kawa-d.github.io/p/hello-world/</link>
         <pubDate>Sun, 09 Jul 2023 00:00:00 +0000</pubDate>
         
-        <guid>https://kawa-d.github.io/p/hugo%E3%81%A8github-page%E3%81%A7%E3%83%96%E3%83%AD%E3%82%B0%E7%94%A8%E3%82%B5%E3%82%A4%E3%83%88%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%BE%E3%81%97%E3%81%9F/</guid>
+        <guid>https://kawa-d.github.io/p/hello-world/</guid>
         <description>&lt;h2 id=&#34;気まぐれ&#34;&gt;気まぐれ&lt;/h2&gt;
 &lt;p&gt;自分は気まぐれに何か新しいことを始めることは好きですが、なかなか続けれない性格で、最近ではそれに反省し、継続することの大切さに気付きました。&lt;/p&gt;
 &lt;p&gt;このブログも気まぐれで始めましたが、１年間ぐらいは続けたいです。自分の成長や学びをブログに残し、いつか他の人にも役立つ情報を提供できるように努めたいです。充実するといいな～。&lt;/p&gt;
