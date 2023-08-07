@@ -6,7 +6,7 @@
 
 <link rel='canonical' href='https://kawa-d.github.io/p/msgraph/'>
 
-<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='Microsoft Graph使ってAzureADユーザーを新規作成してみた'>
+<link rel="stylesheet" href="/scss/style.min.4f17de0df5c63dcd94c8fac80553e749463b2beb141dd433ee9ecb99fef96d23.css"><meta property='og:title' content='Microsoft Graph使ってAzureADユーザーを新規作成してみた'>
 <meta property='og:description' content='自動化したい'>
 <meta property='og:url' content='https://kawa-d.github.io/p/msgraph/'>
 <meta property='og:site_name' content='kawaD'>
@@ -14,7 +14,7 @@
 <meta name="twitter:site" content="@kawaD189">
     <meta name="twitter:creator" content="@kawaD189"><meta name="twitter:title" content="Microsoft Graph使ってAzureADユーザーを新規作成してみた">
 <meta name="twitter:description" content="自動化したい">
-    <link rel="shortcut icon" href="static/favicon.ico" />
+    <link rel="shortcut icon" href="/img/favicon.ico" />
 
     </head>
     <body class="
@@ -227,20 +227,6 @@
         
 
         
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="12" cy="12" r="9" />
-  <polyline points="12 7 12 12 15 15" />
-</svg>
-
-
-
-                <time class="article-time--reading">
-                    読了時間: 1分
-                </time>
-            </div>
-        
     </footer>
     
 
@@ -268,28 +254,28 @@
 <p><a class="link" href="https://learn.microsoft.com/ja-jp/powershell/microsoftgraph/overview?toc=%2Fgraph%2Ftoc.json&amp;view=graph-powershell-1.0"  target="_blank" rel="noopener"
     >参考MS公式ドキュメント</a></p>
 <p>まずpowershellを管理者権限で開いてSDKをインストールします。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># SDKインストール</span>
-</span></span><span class="line"><span class="cl">Install-Package Microsoft.Graph
-</span></span><span class="line"><span class="cl"><span class="c1"># インストールされてたらバージョン確認できる</span>
-</span></span><span class="line"><span class="cl">Get-InstalledModule Microsoft.Graph 
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># SDKインストール</span>
+</span></span><span style="display:flex;"><span>Install-Package Microsoft.Graph
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># インストールされてたらバージョン確認できる</span>
+</span></span><span style="display:flex;"><span>Get-InstalledModule Microsoft.Graph 
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>もし、エラーでInstallできない場合、PowerShell 実行ポリシーを変えるとpowershellのコマンドやスクリプトが実行できます。
 （自分はここでハマりました。）</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>・<a class="link" href="https://learn.microsoft.com/ja-jp/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.3"  target="_blank" rel="noopener"
@@ -301,30 +287,30 @@
 <p>手順10の<code>Select Certificates &amp; secrets under Manage. Select Upload certificate under Certificates. Browse to your certificate's public key file and select Add.</code> というのでハマり、証明書をアップロードってどうするの？と壁にぶち当たりました。</p>
 <p>下記手順で自己証明書を発行してアップロードします。(<a class="link" href="https://jpazureid.github.io/blog/azure-active-directory/operating-license-with-microsoft-graph/#idx2-2"  target="_blank" rel="noopener"
     >こちらのサイト</a>から引用してます。)</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nv">$mycert</span> <span class="o">=</span> New-SelfSignedCertificate -Subject <span class="s2">&#34;CN=SelfSignedCert&#34;</span> -CertStoreLocation <span class="s2">&#34;Cert:\CurrentUser\My&#34;</span>  -KeyExportPolicy Exportable -KeySpec Signature
-</span></span><span class="line"><span class="cl"><span class="c1">#ここで出力されたファイルをアップロードする</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$mycert</span> <span class="p">|</span> Export-Certificate -FilePath <span class="s2">&#34;.\SelfSignedCert.cer&#34;</span>  
-</span></span><span class="line"><span class="cl"><span class="nv">$mycert</span> <span class="p">|</span> Select Thumbprint
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$mycert <span style="color:#f92672">=</span> New-SelfSignedCertificate -Subject <span style="color:#e6db74">&#34;CN=SelfSignedCert&#34;</span> -CertStoreLocation <span style="color:#e6db74">&#34;Cert:\CurrentUser\My&#34;</span>  -KeyExportPolicy Exportable -KeySpec Signature
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#ここで出力されたファイルをアップロードする</span>
+</span></span><span style="display:flex;"><span>$mycert | Export-Certificate -FilePath <span style="color:#e6db74">&#34;.\SelfSignedCert.cer&#34;</span>  
+</span></span><span style="display:flex;"><span>$mycert | Select Thumbprint
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>上記コマンド生成した、SelfSignedCert.cerをアプリにアップロードします。</p>
 <p>あとは、下記コマンドでAzure ADに接続できます。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Connect-MgGraph -Clientid <span class="s2">&#34;&lt;登録したアプリのアプリケーション (クライアント) ID&gt;&#34;</span> -TenantId <span class="s2">&#34;&lt;アプリを登録したテナントのディレクトリ (テナント) ID&gt;&#34;</span> -CertificateThumbprint <span class="s2">&#34;&lt;証明書の拇印&gt;&#34;</span>
-</span></span><span class="line"><span class="cl">Import-Module -Name Microsoft.Graph.Users
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Connect-MgGraph -Clientid <span style="color:#e6db74">&#34;&lt;登録したアプリのアプリケーション (クライアント) ID&gt;&#34;</span> -TenantId <span style="color:#e6db74">&#34;&lt;アプリを登録したテナントのディレクトリ (テナント) ID&gt;&#34;</span> -CertificateThumbprint <span style="color:#e6db74">&#34;&lt;証明書の拇印&gt;&#34;</span>
+</span></span><span style="display:flex;"><span>Import-Module -Name Microsoft.Graph.Users
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>この辺の接続周りは先ほど紹介したMicrosoftのサポートブログを参考にしたほうがわかりやすいです。</p>
@@ -333,48 +319,48 @@
 <h3 id="azureadのアカウントを作成するスクリプト実行する">AzureADのアカウントを作成するスクリプト実行する</h3>
 <p><a class="link" href="https://learn.microsoft.com/ja-jp/graph/api/group-post-members?view=graph-rest-1.0&amp;tabs=http"  target="_blank" rel="noopener"
     >こちらのドキュメント</a>に沿って<code>newAzureUser.ps1</code>というファイル作成して、ユーザー作成のコードを書いてきます。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">Import-Module</span> <span class="n">Microsoft</span><span class="p">.</span><span class="py">Graph</span><span class="p">.</span><span class="py">Users</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nv">$params</span> <span class="p">=</span> <span class="vm">@</span><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="c"># アカウントを有効</span>
-</span></span><span class="line"><span class="cl">	<span class="n">accountEnabled</span> <span class="p">=</span> <span class="vm">$true</span>
-</span></span><span class="line"><span class="cl">    <span class="c"># 表示名</span>
-</span></span><span class="line"><span class="cl">	<span class="n">displayName</span> <span class="p">=</span> <span class="s2">&#34;edamame&#34;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">mailNickname</span> <span class="p">=</span> <span class="s2">&#34;edamame&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="c"># メールアドレス</span>
-</span></span><span class="line"><span class="cl">	<span class="n">userPrincipalName</span> <span class="p">=</span> <span class="s2">&#34;edamame@AAA.CCCC.BBB.com&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="c">#　パスワード</span>
-</span></span><span class="line"><span class="cl">	<span class="n">passwordProfile</span> <span class="p">=</span> <span class="vm">@</span><span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="n">forceChangePasswordNextSignIn</span> <span class="p">=</span> <span class="vm">$true</span>
-</span></span><span class="line"><span class="cl">		<span class="n">password</span> <span class="p">=</span> <span class="s2">&#34;任意でパスワードを入れます&#34;</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">New-MgUser</span> <span class="n">-BodyParameter</span> <span class="nv">$params</span>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Import-Module Microsoft.Graph.Users
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$params = @{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># アカウントを有効</span>
+</span></span><span style="display:flex;"><span>	accountEnabled = $true
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 表示名</span>
+</span></span><span style="display:flex;"><span>	displayName = <span style="color:#e6db74">&#34;edamame&#34;</span>
+</span></span><span style="display:flex;"><span>	mailNickname = <span style="color:#e6db74">&#34;edamame&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># メールアドレス</span>
+</span></span><span style="display:flex;"><span>	userPrincipalName = <span style="color:#e6db74">&#34;edamame@AAA.CCCC.BBB.com&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#　パスワード</span>
+</span></span><span style="display:flex;"><span>	passwordProfile = @{
+</span></span><span style="display:flex;"><span>		forceChangePasswordNextSignIn = $true
+</span></span><span style="display:flex;"><span>		password = <span style="color:#e6db74">&#34;任意でパスワードを入れます&#34;</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>New-MgUser -BodyParameter $params
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>上記実行すると、edamameさんが作成されました。</p>
@@ -451,48 +437,6 @@
      
     
         
-    <div class="disqus-container">
-    <div id="disqus_thread"></div>
-<script type="application/javascript">
-    window.disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
-
-<style>
-    .disqus-container {
-        background-color: var(--card-background);
-        border-radius: var(--card-border-radius);
-        box-shadow: var(--shadow-l1);
-        padding: var(--card-padding);
-    }
-</style>
-
-<script>
-    window.addEventListener('onColorSchemeChange', (e) => {
-        if (typeof DISQUS == 'object') {
-            DISQUS.reset({
-                reload: true
-            });
-        }
-    })
-</script>
-
     
 
     <footer class="site-footer">
