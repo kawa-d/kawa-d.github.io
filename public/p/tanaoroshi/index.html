@@ -6,7 +6,7 @@
 
 <link rel='canonical' href='https://kawa-d.github.io/p/tanaoroshi/'>
 
-<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='github action使ってslack api 叩いてみた。'>
+<link rel="stylesheet" href="/scss/style.min.4f17de0df5c63dcd94c8fac80553e749463b2beb141dd433ee9ecb99fef96d23.css"><meta property='og:title' content='github action使ってslack api 叩いてみた。'>
 <meta property='og:description' content='やってみた'>
 <meta property='og:url' content='https://kawa-d.github.io/p/tanaoroshi/'>
 <meta property='og:site_name' content='kawaD'>
@@ -15,7 +15,7 @@
     <meta name="twitter:creator" content="@kawaD189"><meta name="twitter:title" content="github action使ってslack api 叩いてみた。">
 <meta name="twitter:description" content="やってみた"><meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content='https://kawa-d.github.io/p/tanaoroshi/tanaoroshi.png' />
-    <link rel="shortcut icon" href="static/favicon.ico" />
+    <link rel="shortcut icon" href="/img/favicon.ico" />
 
     </head>
     <body class="
@@ -239,20 +239,6 @@
         
 
         
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="12" cy="12" r="9" />
-  <polyline points="12 7 12 12 15 15" />
-</svg>
-
-
-
-                <time class="article-time--reading">
-                    読了時間: 1分
-                </time>
-            </div>
-        
     </footer>
     
 
@@ -272,91 +258,74 @@
 <p>Githubでpushやmergeなどのタイミングでスクリプトやコマンドを実行できる仕組み。</p>
 <p><a class="link" href="https://docs.github.com/ja/actions/learn-github-actions/understanding-github-actions?learn=getting_started&amp;learnProduct=actions"  target="_blank" rel="noopener"
     >詳しくはこちら</a></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">GitHub Actions は、ビルド、テスト、デプロイのパイプラインを自動化できる
-</span></span><span class="line"><span class="cl">継続的インテグレーションと継続的デリバリー (CI/CD) のプラットフォームです。
-</span></span><span class="line"><span class="cl">リポジトリに対するすべての pull request をビルドしてテストしたり、
-</span></span><span class="line"><span class="cl">マージされた pull request を運用環境にデプロイしたりするワークフローを作成できます。
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">GitHub Actions は、DevOps であるだけでなく、リポジトリで他のイベントが発生したときにワークフローを実行できます。
-</span></span><span class="line"><span class="cl">たとえば、リポジトリで新しい issue が作成されるたびに、
-</span></span><span class="line"><span class="cl">適切なラベルを自動的に追加するワークフローを実行できます。
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">GitHub では、ワークフローを実行するための Linux、Windows、macOS 仮想マシンが提供されます。
-</span></span><span class="line"><span class="cl">また、自身のデータセンターまたはクラウド インフラストラクチャで独自のセルフホスト ランナーをホストすることもできます。
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>githubアクションではLinuxなどの仮想環境立ち上げて、スクリプト実行して、ビルドしたりテストしたりDevOpsな事を自動化してくれます。</p>
+<blockquote>
+<p>GitHub Actions は、ビルド、テスト、デプロイのパイプラインを自動化できる
+継続的インテグレーションと継続的デリバリー (CI/CD) のプラットフォームです。
+リポジトリに対するすべての pull request をビルドしてテストしたり、
+マージされた pull request を運用環境にデプロイしたりするワークフローを作成できます。
+GitHub Actions は、DevOps であるだけでなく、リポジトリで他のイベントが発生したときにワークフローを実行できます。
+たとえば、リポジトリで新しい issue が作成されるたびに、
+適切なラベルを自動的に追加するワークフローを実行できます。
+GitHub では、ワークフローを実行するための Linux、Windows、macOS 仮想マシンが提供されます。
+また、自身のデータセンターまたはクラウド インフラストラクチャで独自のセルフホスト ランナーをホストすることもできます。</p>
+</blockquote>
+<p>githubアクションではLinuxなどの仮想環境立ち上げて、スクリプト実行して、ビルドしたりテストしたりDevOpsな事を自動化してくれます。</p>
 <p>apiとか叩いて良い仕組みに持っていけないかなと思いました。</p>
 <p>slackのapiを叩くようなスクリプトを用意して、ワークフローに組み込んで、実行できるかやってみます。</p>
 <h3 id="ワークフロー">ワークフロー</h3>
 <p>まずはワークフローを作っていきます。</p>
 <p>リポジトリ配下に<code>.github/workflows</code>を作成して、そこにワークフローを定義していきます。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">actions_slack_api</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">on</span><span class="p">:</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">jobs</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">request-slack-api</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l">ubuntu-latest</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">env</span><span class="p">:</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">SLACK_API_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l">${{ secrets.SLACK_API_TOKEN }}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">actions/checkout@v3</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Run echo-members.sh</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">sh ./scripts/echo-members.sh</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">name</span>: <span style="color:#ae81ff">actions_slack_api</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">on</span>: 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">workflow_dispatch</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">jobs</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">request-slack-api</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">env</span>: 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">SLACK_API_TOKEN</span>: <span style="color:#ae81ff">${{ secrets.SLACK_API_TOKEN }}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v3</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Run echo-members.sh</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">run</span>: <span style="color:#ae81ff">sh ./scripts/echo-members.sh</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>SlackのAPIトークンをGithubのSecretに保存して管理下に置いたんですが、それをどうやって持ってくるのかってとこではまりました。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    env: 
-</span></span><span class="line"><span class="cl">      SLACK_API_TOKEN: ${{ secrets.SLACK_API_TOKEN }}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">      run: sh ./scripts/echo-members.sh
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    env: 
+</span></span><span style="display:flex;"><span>      SLACK_API_TOKEN: ${{ secrets.SLACK_API_TOKEN }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      run: sh ./scripts/echo-members.sh
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>これでワークフローに呼び出して、シェルスクリプトに環境変数として呼べばいけました。</p>
@@ -365,32 +334,32 @@
 <p>次にシェルスクリプト作成します。</p>
 <p><code>./scripts/echo-members.sh</code>のようなディレクトリ構成でシェルスクリプトを作成します。</p>
 <p>Ubuntu呼び出してるので、RubyとかJavascriptの環境も作れるようですが、ここではshellでサクッとやっていきます。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
 </span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="c1"># Slack APIのエンドポイントとトークンを設定</span>
-</span></span><span class="line"><span class="cl"><span class="nv">API_ENDPOINT</span><span class="o">=</span><span class="s2">&#34;https://slack.com/api/users.list&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="nv">SLACK_TOKEN</span><span class="o">=</span><span class="nv">$SLACK_API_TOKEN</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># curlコマンドを使ってAPIを呼び出し、結果を変数に格納</span>
-</span></span><span class="line"><span class="cl"><span class="nv">response</span><span class="o">=</span><span class="k">$(</span>curl -s -X POST -H <span class="s2">&#34;Authorization: Bearer </span><span class="nv">$SLACK_TOKEN</span><span class="s2">&#34;</span> <span class="nv">$API_ENDPOINT</span><span class="k">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># レスポンスを表示（デバッグ用）</span>
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="nv">$response</span>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Slack APIのエンドポイントとトークンを設定</span>
+</span></span><span style="display:flex;"><span>API_ENDPOINT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://slack.com/api/users.list&#34;</span>
+</span></span><span style="display:flex;"><span>SLACK_TOKEN<span style="color:#f92672">=</span>$SLACK_API_TOKEN
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># curlコマンドを使ってAPIを呼び出し、結果を変数に格納</span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>curl -s -X POST -H <span style="color:#e6db74">&#34;Authorization: Bearer </span>$SLACK_TOKEN<span style="color:#e6db74">&#34;</span> $API_ENDPOINT<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># レスポンスを表示（デバッグ用）</span>
+</span></span><span style="display:flex;"><span>echo $response
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>これをGithubにあげて、ワークフローを手動実行してみます。</p>
@@ -467,48 +436,6 @@
      
     
         
-    <div class="disqus-container">
-    <div id="disqus_thread"></div>
-<script type="application/javascript">
-    window.disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
-
-<style>
-    .disqus-container {
-        background-color: var(--card-background);
-        border-radius: var(--card-border-radius);
-        box-shadow: var(--shadow-l1);
-        padding: var(--card-padding);
-    }
-</style>
-
-<script>
-    window.addEventListener('onColorSchemeChange', (e) => {
-        if (typeof DISQUS == 'object') {
-            DISQUS.reset({
-                reload: true
-            });
-        }
-    })
-</script>
-
     
 
     <footer class="site-footer">

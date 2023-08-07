@@ -2,11 +2,11 @@
 title: Azureリソース管理の全体像
 date: 2023-08-05 00:00:00+0000
 draft: true
+tags:
+    - Github
 # image: cover.jpg
 # categories:
 #     - Example Category
-# tags:
-#     - Example Tag
 ---
 
 ## Azureのリソース管理
