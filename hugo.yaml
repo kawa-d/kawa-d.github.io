@@ -12,7 +12,7 @@ googleAnalytics:
 
 # Theme i18n support
 # Available values: ar, bn, ca, de, el, en, es, fr, hu, id, it, ja, ko, nl, pt-br, th, uk, zh-cn, zh-hk, zh-tw
-DefaultContentLanguage: en
+DefaultContentLanguage: ja
 
 # Set hasCJKLanguage to true if DefaultContentLanguage is in [zh-cn ja ko]
 # This will make .Summary and .WordCount behave correctly for CJK languages.
@@ -27,10 +27,9 @@ params:
         - post
     featuredImageField: image
     rssFullContent: true
-    favicon:  # e.g.: favicon placed in `static/favicon.ico` of your site folder, then set this field to `/favicon.ico` (`/` is necessary)
-
+    favicon: static/favicon.ico
     footer:
-        since: 2020
+        since: 2023
         customText:
 
     dateFormat:
@@ -39,7 +38,7 @@ params:
 
     sidebar:
         emoji:
-        subtitle: 継続したい
+        subtitle: 継続
         avatar:
             enabled: true
             local: true
