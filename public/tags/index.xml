@@ -5,6 +5,15 @@
         <link>https://kawa-d.github.io/tags/</link>
         <description>Recent content in Tags on kawaD</description>
         <generator>Hugo -- gohugo.io</generator>
-        <language>ja</language><atom:link href="https://kawa-d.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+        <language>ja</language>
+        <lastBuildDate>Sat, 12 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://kawa-d.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Azure</title>
+        <link>https://kawa-d.github.io/tags/azure/</link>
+        <pubDate>Sat, 12 Aug 2023 00:00:00 +0000</pubDate>
+        
+        <guid>https://kawa-d.github.io/tags/azure/</guid>
+        <description></description>
+        </item>
+        
     </channel>
 </rss>
