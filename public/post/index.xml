@@ -6,7 +6,88 @@
         <description>Recent content in Posts on kawaD</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>ja</language>
-        <lastBuildDate>Sat, 29 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://kawa-d.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 12 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://kawa-d.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Azureのリソース管理について全体像ざっくり調べた</title>
+        <link>https://kawa-d.github.io/p/arm/</link>
+        <pubDate>Sat, 12 Aug 2023 00:00:00 +0000</pubDate>
+        
+        <guid>https://kawa-d.github.io/p/arm/</guid>
+        <description>&lt;img src="https://kawa-d.github.io/p/arm/AzureRM.jpg" alt="Featured image of post Azureのリソース管理について全体像ざっくり調べた" /&gt;&lt;h2 id=&#34;azureのリソース管理&#34;&gt;Azureのリソース管理&lt;/h2&gt;
+&lt;p&gt;業務でリソースアカウントを扱う必要があったんですが、権限やロールの関係でアクセスできなかった事がありました。&lt;/p&gt;
+&lt;p&gt;AzureADのロールでは該当するロールが見当たらず探してたところ、&lt;strong&gt;リソースグループ&lt;/strong&gt; に自分を追加する必要がありました。&lt;/p&gt;
+&lt;p&gt;Azureのリソースに対してのロール管理はAzureADとは別であるみたいで、あんまり知らなかったのでまとめてみました。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://learn.microsoft.com/ja-jp/azure/cloud-adoption-framework/get-started/how-azure-resource-manager-works&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;公式ドキュメント&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;階層構造&#34;&gt;階層構造&lt;/h3&gt;
+&lt;p&gt;Azureリソース全体の管理構成は、リソースを管理するための階層がいくつかあり、下記の図のようになります。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/arm/scope-levels.png&#34;
+	width=&#34;385&#34;
+	height=&#34;245&#34;
+	srcset=&#34;https://kawa-d.github.io/p/arm/scope-levels_hu54da86ebd778cf9404220c372f73bb37_17624_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/arm/scope-levels_hu54da86ebd778cf9404220c372f73bb37_17624_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;scope-levels.png&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;157&#34;
+		data-flex-basis=&#34;377px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;上記のスコープをまとめて管理するシステムを  &lt;strong&gt;AzureResorceManager(ARM)&lt;/strong&gt;  と言います。&lt;/p&gt;
+&lt;h4 id=&#34;azure-の用語&#34;&gt;Azure の用語&lt;/h4&gt;
+&lt;p&gt;上記の階層構造の用語の説明です。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;管理グループ&lt;/strong&gt;：組織に多数の Azure サブスクリプションがある場合の管理システムで 範囲はサブスクリプションを上回ります。管理グループを使うと、サブスクリプションの種類に関係なく、エンタープライズ レベルの管理を大規模に行うことができます。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;リソース&lt;/strong&gt; : Azure によって管理されるエンティティ。 Azure 仮想マシン、仮想ネットワーク、ストレージ アカウントなどが例として挙げられます。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;サブスクリプション&lt;/strong&gt; : リソースの論理コンテナー。 各 Azure リソースは、1 つのサブスクリプションだけに関連付けられます。 Azure の導入はサブスクリプションの作成から始まります。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;リソース グループ&lt;/strong&gt; : サブスクリプション内の関連するリソースをグループ化する論理コンテナー。 各リソースが所属できるリソース グループは 1 つに限られます。 リソース グループを使用すると、サブスクリプション内でより詳細なグループ化を行うことができます。 これらは一般に、サブスクリプション内のワークロード、アプリケーション、または特定の機能をサポートするために必要な資産のコレクションを表すために使用されます&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;会社でAzureを運用するときに管理グループ単位でAzureを利用している会社があるのかなってくらい細かいですね。&lt;/p&gt;
+&lt;h4 id=&#34;azureresorcemanagerarmとazureacitvedirectoryazureadの関係&#34;&gt;AzureResorceManager(ARM)と、AzureAcitveDirectory(AzureAD)の関係&lt;/h4&gt;
+&lt;p&gt;AzureADはARMとは別の専用のインスタンスとして扱っていて、ARMでは、Azureリソースの展開時にアクセス権限とセキュリティを管理するために、Azure AD のユーザーやグループを使用します。&lt;/p&gt;
+&lt;p&gt;Azure AD はユーザーのアイデンティティ管理とアクセス制御を担当し、ARM はAzure リソースの管理と展開を担当します。下記図のように、Azure AD のユーザーやグループを使用して、ARM を通じてリソースへのアクセスを制御することが可能です。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kawa-d.github.io/p/arm/governance-AzureAD.png&#34;
+	width=&#34;1277&#34;
+	height=&#34;883&#34;
+	srcset=&#34;https://kawa-d.github.io/p/arm/governance-AzureAD_huc0077bf993af557a134c047b4d66c60d_62290_480x0_resize_box_3.png 480w, https://kawa-d.github.io/p/arm/governance-AzureAD_huc0077bf993af557a134c047b4d66c60d_62290_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;governance-AzureAD.png&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;144&#34;
+		data-flex-basis=&#34;347px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;azureストレージアカウント&#34;&gt;Azureストレージアカウント&lt;/h3&gt;
+&lt;p&gt;ストレージアカウントはAzureのストレージサービスで、データオブジェクト (BLOB、ファイル、キュー、テーブル)に対して、HTTP,HTTPS経由でアクセスできる場所です。&lt;/p&gt;
+&lt;p&gt;ストレージアカウントはリソースグループによってまとめられていて、そこでロールを追加しないと管理者としてデータオブジェクトにアクセスできなかったです。&lt;/p&gt;
+&lt;h4 id=&#34;azureストレージアカウントのデータオブジェクト&#34;&gt;Azureストレージアカウントのデータオブジェクト&lt;/h4&gt;
+&lt;p&gt;データオブジェクトについて具体的に記載すると、下記の項目になります。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Azure BLOB:テキストおよびバイナリ データのための高度にスケーラブルなオブジェクト ストア。 また、Data Lake Storage Gen2 によるビッグ データ分析のサポートも含まれています。&lt;/li&gt;
+&lt;li&gt;Azure Files:クラウドまたはオンプレミスのデプロイ用のマネージド ファイル共有。&lt;/li&gt;
+&lt;li&gt;Azure Elastic SAN (プレビュー): Azure での SAN のデプロイ、スケーリング、管理、構成を簡略化する完全に統合されたソリューション。&lt;/li&gt;
+&lt;li&gt;Azure キュー:アプリケーション コンポーネント間の信頼性の高いメッセージングのためのメッセージング ストア。&lt;/li&gt;
+&lt;li&gt;Azure テーブル:構造化データのスキーマレス ストレージのための NoSQL ストア。&lt;/li&gt;
+&lt;li&gt;Azure マネージド ディスク: Azure VM のブロックレベルのストレージ ボリューム。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;また別の記事でこのデータの扱いについて、例えば、Azure BLOB StoageのSASについて書きたいです。&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Microsoft Graph使ってAzureADユーザーを新規作成してみた</title>
         <link>https://kawa-d.github.io/p/msgraph/</link>
         <pubDate>Sat, 29 Jul 2023 00:00:00 +0000</pubDate>

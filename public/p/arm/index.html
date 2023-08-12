@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Azureのリソース管理 業務でリソースアカウントを扱う必要があったんですが、権限やロールの関係でアクセスできなかった事がありました。
+AzureADのロールでは該当するロールが見当たらず探してたところ、リソースグループ に自分を追加する必要がありました。
+Azureのリソースに対してのロール管理はAzureADとは別であるみたいで、あんまり知らなかったのでまとめてみました。
+公式ドキュメント 階層構造 Azureリソース全体の管理構成は、リソースを管理するための階層がいくつかあり、下記の図のようになります。
+上記のスコープをまとめて管理するシステムを AzureResorceManager(ARM) と言います。
+Azure の用語 上記の階層構造の用語の説明です。
+管理グループ：組織に多数の Azure サブスクリプションがある場合の管理システムで 範囲はサブスクリプションを上回ります。管理グループを使うと、サブスクリプションの種類に関係なく、エンタープライズ レベルの管理を大規模に行うことができます。
+リソース : Azure によって管理されるエンティティ。 Azure 仮想マシン、仮想ネットワーク、ストレージ アカウントなどが例として挙げられます。
+サブスクリプション : リソースの論理コンテナー。 各 Azure リソースは、1 つのサブスクリプションだけに関連付けられます。 Azure の導入はサブスクリプションの作成から始まります。
+リソース グループ : サブスクリプション内の関連するリソースをグループ化する論理コンテナー。 各リソースが所属できるリソース グループは 1 つに限られます。 リソース グループを使用すると、サブスクリプション内でより詳細なグループ化を行うことができます。 これらは一般に、サブスクリプション内のワークロード、アプリケーション、または特定の機能をサポートするために必要な資産のコレクションを表すために使用されます
+会社でAzureを運用するときに管理グループ単位でAzureを利用している会社があるのかなってくらい細かいですね。
+AzureResorceManager(ARM)と、AzureAcitveDirectory(AzureAD)の関係 AzureADはARMとは別の専用のインスタンスとして扱っていて、ARMでは、Azureリソースの展開時にアクセス権限とセキュリティを管理するために、Azure AD のユーザーやグループを使用します。
+Azure AD はユーザーのアイデンティティ管理とアクセス制御を担当し、ARM はAzure リソースの管理と展開を担当します。下記図のように、Azure AD のユーザーやグループを使用して、ARM を通じてリソースへのアクセスを制御することが可能です。
+Azureストレージアカウント ストレージアカウントはAzureのストレージサービスで、データオブジェクト (BLOB、ファイル、キュー、テーブル)に対して、HTTP,HTTPS経由でアクセスできる場所です。
+ストレージアカウントはリソースグループによってまとめられていて、そこでロールを追加しないと管理者としてデータオブジェクトにアクセスできなかったです。
+Azureストレージアカウントのデータオブジェクト データオブジェクトについて具体的に記載すると、下記の項目になります。
+Azure BLOB:テキストおよびバイナリ データのための高度にスケーラブルなオブジェクト ストア。 また、Data Lake Storage Gen2 によるビッグ データ分析のサポートも含まれています。 Azure Files:クラウドまたはオンプレミスのデプロイ用のマネージド ファイル共有。 Azure Elastic SAN (プレビュー): Azure での SAN のデプロイ、スケーリング、管理、構成を簡略化する完全に統合されたソリューション。 Azure キュー:アプリケーション コンポーネント間の信頼性の高いメッセージングのためのメッセージング ストア。 Azure テーブル:構造化データのスキーマレス ストレージのための NoSQL ストア。 Azure マネージド ディスク: Azure VM のブロックレベルのストレージ ボリューム。 また別の記事でこのデータの扱いについて、例えば、Azure BLOB StoageのSASについて書きたいです。'>
+<title>Azureのリソース管理について全体像ざっくり調べた</title>
+
+<link rel='canonical' href='https://kawa-d.github.io/p/arm/'>
+
+<link rel="stylesheet" href="/scss/style.min.afada97782b22e90164715ce17d5c9d6ef9f0f93e7c5c82ac8e83a6fafb95141.css"><meta property='og:title' content='Azureのリソース管理について全体像ざっくり調べた'>
+<meta property='og:description' content='Azureのリソース管理 業務でリソースアカウントを扱う必要があったんですが、権限やロールの関係でアクセスできなかった事がありました。
+AzureADのロールでは該当するロールが見当たらず探してたところ、リソースグループ に自分を追加する必要がありました。
+Azureのリソースに対してのロール管理はAzureADとは別であるみたいで、あんまり知らなかったのでまとめてみました。
+公式ドキュメント 階層構造 Azureリソース全体の管理構成は、リソースを管理するための階層がいくつかあり、下記の図のようになります。
+上記のスコープをまとめて管理するシステムを AzureResorceManager(ARM) と言います。
+Azure の用語 上記の階層構造の用語の説明です。
+管理グループ：組織に多数の Azure サブスクリプションがある場合の管理システムで 範囲はサブスクリプションを上回ります。管理グループを使うと、サブスクリプションの種類に関係なく、エンタープライズ レベルの管理を大規模に行うことができます。
+リソース : Azure によって管理されるエンティティ。 Azure 仮想マシン、仮想ネットワーク、ストレージ アカウントなどが例として挙げられます。
+サブスクリプション : リソースの論理コンテナー。 各 Azure リソースは、1 つのサブスクリプションだけに関連付けられます。 Azure の導入はサブスクリプションの作成から始まります。
+リソース グループ : サブスクリプション内の関連するリソースをグループ化する論理コンテナー。 各リソースが所属できるリソース グループは 1 つに限られます。 リソース グループを使用すると、サブスクリプション内でより詳細なグループ化を行うことができます。 これらは一般に、サブスクリプション内のワークロード、アプリケーション、または特定の機能をサポートするために必要な資産のコレクションを表すために使用されます
+会社でAzureを運用するときに管理グループ単位でAzureを利用している会社があるのかなってくらい細かいですね。
+AzureResorceManager(ARM)と、AzureAcitveDirectory(AzureAD)の関係 AzureADはARMとは別の専用のインスタンスとして扱っていて、ARMでは、Azureリソースの展開時にアクセス権限とセキュリティを管理するために、Azure AD のユーザーやグループを使用します。
+Azure AD はユーザーのアイデンティティ管理とアクセス制御を担当し、ARM はAzure リソースの管理と展開を担当します。下記図のように、Azure AD のユーザーやグループを使用して、ARM を通じてリソースへのアクセスを制御することが可能です。
+Azureストレージアカウント ストレージアカウントはAzureのストレージサービスで、データオブジェクト (BLOB、ファイル、キュー、テーブル)に対して、HTTP,HTTPS経由でアクセスできる場所です。
+ストレージアカウントはリソースグループによってまとめられていて、そこでロールを追加しないと管理者としてデータオブジェクトにアクセスできなかったです。
+Azureストレージアカウントのデータオブジェクト データオブジェクトについて具体的に記載すると、下記の項目になります。
+Azure BLOB:テキストおよびバイナリ データのための高度にスケーラブルなオブジェクト ストア。 また、Data Lake Storage Gen2 によるビッグ データ分析のサポートも含まれています。 Azure Files:クラウドまたはオンプレミスのデプロイ用のマネージド ファイル共有。 Azure Elastic SAN (プレビュー): Azure での SAN のデプロイ、スケーリング、管理、構成を簡略化する完全に統合されたソリューション。 Azure キュー:アプリケーション コンポーネント間の信頼性の高いメッセージングのためのメッセージング ストア。 Azure テーブル:構造化データのスキーマレス ストレージのための NoSQL ストア。 Azure マネージド ディスク: Azure VM のブロックレベルのストレージ ボリューム。 また別の記事でこのデータの扱いについて、例えば、Azure BLOB StoageのSASについて書きたいです。'>
+<meta property='og:url' content='https://kawa-d.github.io/p/arm/'>
+<meta property='og:site_name' content='kawaD'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Azure' /><meta property='article:published_time' content='2023-08-12T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2023-08-12T00:00:00&#43;00:00'/><meta property='og:image' content='https://kawa-d.github.io/p/arm/AzureRM.jpg' />
+<meta name="twitter:site" content="@kawaD189">
+    <meta name="twitter:creator" content="@kawaD189"><meta name="twitter:title" content="Azureのリソース管理について全体像ざっくり調べた">
+<meta name="twitter:description" content="Azureのリソース管理 業務でリソースアカウントを扱う必要があったんですが、権限やロールの関係でアクセスできなかった事がありました。
+AzureADのロールでは該当するロールが見当たらず探してたところ、リソースグループ に自分を追加する必要がありました。
+Azureのリソースに対してのロール管理はAzureADとは別であるみたいで、あんまり知らなかったのでまとめてみました。
+公式ドキュメント 階層構造 Azureリソース全体の管理構成は、リソースを管理するための階層がいくつかあり、下記の図のようになります。
+上記のスコープをまとめて管理するシステムを AzureResorceManager(ARM) と言います。
+Azure の用語 上記の階層構造の用語の説明です。
+管理グループ：組織に多数の Azure サブスクリプションがある場合の管理システムで 範囲はサブスクリプションを上回ります。管理グループを使うと、サブスクリプションの種類に関係なく、エンタープライズ レベルの管理を大規模に行うことができます。
+リソース : Azure によって管理されるエンティティ。 Azure 仮想マシン、仮想ネットワーク、ストレージ アカウントなどが例として挙げられます。
+サブスクリプション : リソースの論理コンテナー。 各 Azure リソースは、1 つのサブスクリプションだけに関連付けられます。 Azure の導入はサブスクリプションの作成から始まります。
+リソース グループ : サブスクリプション内の関連するリソースをグループ化する論理コンテナー。 各リソースが所属できるリソース グループは 1 つに限られます。 リソース グループを使用すると、サブスクリプション内でより詳細なグループ化を行うことができます。 これらは一般に、サブスクリプション内のワークロード、アプリケーション、または特定の機能をサポートするために必要な資産のコレクションを表すために使用されます
+会社でAzureを運用するときに管理グループ単位でAzureを利用している会社があるのかなってくらい細かいですね。
+AzureResorceManager(ARM)と、AzureAcitveDirectory(AzureAD)の関係 AzureADはARMとは別の専用のインスタンスとして扱っていて、ARMでは、Azureリソースの展開時にアクセス権限とセキュリティを管理するために、Azure AD のユーザーやグループを使用します。
+Azure AD はユーザーのアイデンティティ管理とアクセス制御を担当し、ARM はAzure リソースの管理と展開を担当します。下記図のように、Azure AD のユーザーやグループを使用して、ARM を通じてリソースへのアクセスを制御することが可能です。
+Azureストレージアカウント ストレージアカウントはAzureのストレージサービスで、データオブジェクト (BLOB、ファイル、キュー、テーブル)に対して、HTTP,HTTPS経由でアクセスできる場所です。
+ストレージアカウントはリソースグループによってまとめられていて、そこでロールを追加しないと管理者としてデータオブジェクトにアクセスできなかったです。
+Azureストレージアカウントのデータオブジェクト データオブジェクトについて具体的に記載すると、下記の項目になります。
+Azure BLOB:テキストおよびバイナリ データのための高度にスケーラブルなオブジェクト ストア。 また、Data Lake Storage Gen2 によるビッグ データ分析のサポートも含まれています。 Azure Files:クラウドまたはオンプレミスのデプロイ用のマネージド ファイル共有。 Azure Elastic SAN (プレビュー): Azure での SAN のデプロイ、スケーリング、管理、構成を簡略化する完全に統合されたソリューション。 Azure キュー:アプリケーション コンポーネント間の信頼性の高いメッセージングのためのメッセージング ストア。 Azure テーブル:構造化データのスキーマレス ストレージのための NoSQL ストア。 Azure マネージド ディスク: Azure VM のブロックレベルのストレージ ボリューム。 また別の記事でこのデータの扱いについて、例えば、Azure BLOB StoageのSASについて書きたいです。"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://kawa-d.github.io/p/arm/AzureRM.jpg' />
+    <link rel="shortcut icon" href="/img/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="メニューを開く・閉じる">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/icon-kawa-d_hu2b73f01ef0e0acd10fdc1c9e2b27e507_129705_300x0_resize_q75_box.JPG" width="300"
+                            height="225" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">kawaD</a></h1>
+            <h2 class="site-description">継続</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/kawa-d'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com/kawaD189'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>ダークモード</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目次</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#azureのリソース管理">Azureのリソース管理</a>
+      <ol>
+        <li><a href="#階層構造">階層構造</a>
+          <ol>
+            <li><a href="#azure-の用語">Azure の用語</a></li>
+            <li><a href="#azureresorcemanagerarmとazureacitvedirectoryazureadの関係">AzureResorceManager(ARM)と、AzureAcitveDirectory(AzureAD)の関係</a></li>
+          </ol>
+        </li>
+        <li><a href="#azureストレージアカウント">Azureストレージアカウント</a>
+          <ol>
+            <li><a href="#azureストレージアカウントのデータオブジェクト">Azureストレージアカウントのデータオブジェクト</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/arm/">
+                <img src="/p/arm/AzureRM_hu1262561c227b4f1be1e3901313bea832_113219_800x0_resize_q75_box.jpg"
+                        srcset="/p/arm/AzureRM_hu1262561c227b4f1be1e3901313bea832_113219_800x0_resize_q75_box.jpg 800w, /p/arm/AzureRM_hu1262561c227b4f1be1e3901313bea832_113219_1600x0_resize_q75_box.jpg 1600w"
+                        width="800" 
+                        height="800" 
+                        loading="lazy"
+                        alt="Featured image of post Azureのリソース管理について全体像ざっくり調べた" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/arm/">Azureのリソース管理について全体像ざっくり調べた</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Aug 12, 2023</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="azureのリソース管理">Azureのリソース管理</h2>
+<p>業務でリソースアカウントを扱う必要があったんですが、権限やロールの関係でアクセスできなかった事がありました。</p>
+<p>AzureADのロールでは該当するロールが見当たらず探してたところ、<strong>リソースグループ</strong> に自分を追加する必要がありました。</p>
+<p>Azureのリソースに対してのロール管理はAzureADとは別であるみたいで、あんまり知らなかったのでまとめてみました。</p>
+<ul>
+<li><a class="link" href="https://learn.microsoft.com/ja-jp/azure/cloud-adoption-framework/get-started/how-azure-resource-manager-works"  target="_blank" rel="noopener"
+    >公式ドキュメント</a></li>
+</ul>
+<h3 id="階層構造">階層構造</h3>
+<p>Azureリソース全体の管理構成は、リソースを管理するための階層がいくつかあり、下記の図のようになります。</p>
+<p><img src="/p/arm/scope-levels.png"
+	width="385"
+	height="245"
+	srcset="/p/arm/scope-levels_hu54da86ebd778cf9404220c372f73bb37_17624_480x0_resize_box_3.png 480w, /p/arm/scope-levels_hu54da86ebd778cf9404220c372f73bb37_17624_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="scope-levels.png"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="157"
+		data-flex-basis="377px"
+	
+></p>
+<p>上記のスコープをまとめて管理するシステムを  <strong>AzureResorceManager(ARM)</strong>  と言います。</p>
+<h4 id="azure-の用語">Azure の用語</h4>
+<p>上記の階層構造の用語の説明です。</p>
+<ul>
+<li>
+<p><strong>管理グループ</strong>：組織に多数の Azure サブスクリプションがある場合の管理システムで 範囲はサブスクリプションを上回ります。管理グループを使うと、サブスクリプションの種類に関係なく、エンタープライズ レベルの管理を大規模に行うことができます。</p>
+</li>
+<li>
+<p><strong>リソース</strong> : Azure によって管理されるエンティティ。 Azure 仮想マシン、仮想ネットワーク、ストレージ アカウントなどが例として挙げられます。</p>
+</li>
+<li>
+<p><strong>サブスクリプション</strong> : リソースの論理コンテナー。 各 Azure リソースは、1 つのサブスクリプションだけに関連付けられます。 Azure の導入はサブスクリプションの作成から始まります。</p>
+</li>
+<li>
+<p><strong>リソース グループ</strong> : サブスクリプション内の関連するリソースをグループ化する論理コンテナー。 各リソースが所属できるリソース グループは 1 つに限られます。 リソース グループを使用すると、サブスクリプション内でより詳細なグループ化を行うことができます。 これらは一般に、サブスクリプション内のワークロード、アプリケーション、または特定の機能をサポートするために必要な資産のコレクションを表すために使用されます</p>
+</li>
+</ul>
+<p>会社でAzureを運用するときに管理グループ単位でAzureを利用している会社があるのかなってくらい細かいですね。</p>
+<h4 id="azureresorcemanagerarmとazureacitvedirectoryazureadの関係">AzureResorceManager(ARM)と、AzureAcitveDirectory(AzureAD)の関係</h4>
+<p>AzureADはARMとは別の専用のインスタンスとして扱っていて、ARMでは、Azureリソースの展開時にアクセス権限とセキュリティを管理するために、Azure AD のユーザーやグループを使用します。</p>
+<p>Azure AD はユーザーのアイデンティティ管理とアクセス制御を担当し、ARM はAzure リソースの管理と展開を担当します。下記図のように、Azure AD のユーザーやグループを使用して、ARM を通じてリソースへのアクセスを制御することが可能です。</p>
+<p><img src="/p/arm/governance-AzureAD.png"
+	width="1277"
+	height="883"
+	srcset="/p/arm/governance-AzureAD_huc0077bf993af557a134c047b4d66c60d_62290_480x0_resize_box_3.png 480w, /p/arm/governance-AzureAD_huc0077bf993af557a134c047b4d66c60d_62290_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="governance-AzureAD.png"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="144"
+		data-flex-basis="347px"
+	
+></p>
+<h3 id="azureストレージアカウント">Azureストレージアカウント</h3>
+<p>ストレージアカウントはAzureのストレージサービスで、データオブジェクト (BLOB、ファイル、キュー、テーブル)に対して、HTTP,HTTPS経由でアクセスできる場所です。</p>
+<p>ストレージアカウントはリソースグループによってまとめられていて、そこでロールを追加しないと管理者としてデータオブジェクトにアクセスできなかったです。</p>
+<h4 id="azureストレージアカウントのデータオブジェクト">Azureストレージアカウントのデータオブジェクト</h4>
+<p>データオブジェクトについて具体的に記載すると、下記の項目になります。</p>
+<ul>
+<li>Azure BLOB:テキストおよびバイナリ データのための高度にスケーラブルなオブジェクト ストア。 また、Data Lake Storage Gen2 によるビッグ データ分析のサポートも含まれています。</li>
+<li>Azure Files:クラウドまたはオンプレミスのデプロイ用のマネージド ファイル共有。</li>
+<li>Azure Elastic SAN (プレビュー): Azure での SAN のデプロイ、スケーリング、管理、構成を簡略化する完全に統合されたソリューション。</li>
+<li>Azure キュー:アプリケーション コンポーネント間の信頼性の高いメッセージングのためのメッセージング ストア。</li>
+<li>Azure テーブル:構造化データのスキーマレス ストレージのための NoSQL ストア。</li>
+<li>Azure マネージド ディスク: Azure VM のブロックレベルのストレージ ボリューム。</li>
+</ul>
+<p>また別の記事でこのデータの扱いについて、例えば、Azure BLOB StoageのSASについて書きたいです。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/azure/">Azure</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 kawaD
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        テーマ <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.17.0">Stack</a></b> は <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> によって設計されています。
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
